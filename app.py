@@ -24,6 +24,7 @@ def get_uid(func):
             return uid.get_response()
         
         return func(uid, *args, **kwargs)
+    wrapper.__name__ = func.__name__
     return wrapper
 
 app = Flask(__name__)
