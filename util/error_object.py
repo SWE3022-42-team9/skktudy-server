@@ -13,6 +13,4 @@ class ErrorObject:
         self.error_message = error_message
         
     def get_response(self):
-        response = jsonify(message=self.error_message)
-        response.status_code = self.status_code
-        return response
+        return {"message": self.error_message}, self.status_code
