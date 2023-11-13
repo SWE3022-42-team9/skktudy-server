@@ -19,43 +19,43 @@ Disallow: /
 
 @app.route('/board')
 def board():
-  pass
+    pass
 
 @app.route('/board/<board_id>')
 def board_id(board_id: str):
-  pass
+    pass
 
 @app.route('/post/<post_id>')
 def post_id(post_id: str):
-  pass
+    pass
 
 @app.route('/post/upload')
 def post_upload():
-  pass
+    pass
 
 @app.route('/post/like')
 def post_like():
-  pass
+    pass
 
 @app.route('/comment/upload')
 def comment_upload():
-  pass
+    pass
 
 @app.route('/comment/delete')
 def comment_delete():
-  pass
+    pass
 
 @app.route('/comment/like')
 def comment_like():
-  pass
+    pass
 
 @app.route('/chatbot/send')
 def chatbot_send():
-  pass
+    pass
 
 @app.route('/chatbot/log')
 def chatbot_log():
-  pass
+    pass
 
 if __name__=="__main__":
     app.run(host="0.0.0.0", debug=True)
