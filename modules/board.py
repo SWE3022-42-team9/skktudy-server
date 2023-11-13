@@ -2,9 +2,10 @@ import util.db as db
 from util.error_object import ErrorObject
 
 # /board
-def board_list(offset: int, limit: int) -> dict | ErrorObject:
+def board_list(uid: str, offset: int, limit: int) -> dict | ErrorObject:
     # TODO: Implement
     # parameters:
+    #   uid: str
     #   offset: int
     #   limit: int
     # returns:
@@ -12,9 +13,10 @@ def board_list(offset: int, limit: int) -> dict | ErrorObject:
     pass
 
 # /board/{BOARD_ID}
-def board_get(board_id: int, offset: int, limit: int) -> dict | ErrorObject:
+def board_get(uid: str, board_id: int, offset: int, limit: int) -> dict | ErrorObject:
     # TODO: Implement
     # parameters:
+    #   uid: str
     #   board_id: int
     #   offset: int
     #   limit: int

@@ -2,9 +2,10 @@ import util.db as db
 from util.error_object import ErrorObject
 
 # /post/{POST_ID}
-def post_get(board_id: int, post_id: int) -> dict | ErrorObject:
+def post_get(uid: str, board_id: int, post_id: int) -> dict | ErrorObject:
     # TODO: Implement
     # parameters:
+    #   uid: str
     #   board_id: int
     #   post_id: int
     # returns:
@@ -12,11 +13,11 @@ def post_get(board_id: int, post_id: int) -> dict | ErrorObject:
     pass
 
 # /post/upload
-def post_upload(post: str, user_id: str, board_id: int, image: str | None) -> int | ErrorObject:
+def post_upload(uid: str, post: str, board_id: int, image: str | None) -> int | ErrorObject:
     # TODO: Implement
     # parameters:
+    #   uid: str
     #   post: str
-    #   user_id: str
     #   board_id: int
     #   image: str | None
     # returns:
@@ -24,11 +25,11 @@ def post_upload(post: str, user_id: str, board_id: int, image: str | None) -> in
     pass
 
 # /post/like
-def post_like(post_id: int, user_id: str) -> int | ErrorObject:
+def post_like(uid: str, post_id: int) -> int | ErrorObject:
     # TODO: Implement
     # parameters:
+    #   uid: str
     #   post_id: int
-    #   user_id: str
     # returns:
     #   int | ErrorObject: post_id | ErrorObject
     pass
