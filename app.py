@@ -39,43 +39,53 @@ Disallow: /
 '''
 
 @app.route('/board')
-def board():
+@get_uid
+def board(uid: str):
   pass
 
 @app.route('/board/<board_id>')
-def board_id(board_id: str):
+@get_uid
+def board_id(uid: str, board_id: str):
   pass
 
 @app.route('/post/<post_id>')
-def post_id(post_id: str):
+@get_uid
+def post_id(uid: str, post_id: str):
   pass
 
 @app.route('/post/upload')
-def post_upload():
+@get_uid
+def post_upload(uid: str):
   pass
 
 @app.route('/post/like')
-def post_like():
+@get_uid
+def post_like(uid: str):
   pass
 
 @app.route('/comment/upload')
-def comment_upload():
+@get_uid
+def comment_upload(uid: str):
   pass
 
 @app.route('/comment/delete')
-def comment_delete():
+@get_uid
+def comment_delete(uid: str):
   pass
 
 @app.route('/comment/like')
-def comment_like():
+@get_uid
+def comment_like(uid: str):
   pass
 
 @app.route('/chatbot/send')
-def chatbot_send():
+@get_uid
+def chatbot_send(uid: str):
   pass
 
 @app.route('/chatbot/log')
-def chatbot_log():
+@get_uid
+def chatbot_log(uid: str):
   pass
 
 if __name__=="__main__":
