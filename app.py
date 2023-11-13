@@ -8,17 +8,23 @@ from modules.chatbot import *
 
 from util.error_object import ErrorObject
 
-def get_uid() -> str | ErrorObject:
-    token = request.headers.get('Authorization') # Bearer xxx
-    if token is None: # Token이 없음
-        return ErrorObject(401, 'No authorization token')
-    
-    try:
-        token = token.split(' ')[1]
-    except: # Token 형태 이상
-        return ErrorObject(401, 'Invalid token format')
-    
-    return auth(token)
+def get_uid(func):
+    def wrapper(*args, **kwargs):
+        token = request.headers.get('Authorization') # Bearer xxx
+        if token is None: # Token이 없음
+            return {"message": "No authorization token"}, 401
+        
+        try:
+            token = token.split(' ')[1]
+        except: # Token 형태 이상
+            return {"message": "Invalid token format"}, 401
+        
+        uid = auth(token)
+        if isinstance(uid, ErrorObject):
+            return uid.get_response()
+        
+        return func(uid, *args, **kwargs)
+    return wrapper
 
 app = Flask(__name__)
 
