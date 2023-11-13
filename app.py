@@ -1,9 +1,24 @@
-from flask import Flask, render_template
+from flask import Flask, render_template, request
 
+from modules.auth import auth
 from modules.board import *
 from modules.post import *
 from modules.comment import *
 from modules.chatbot import *
+
+from util.error_object import ErrorObject
+
+def get_uid() -> str | ErrorObject:
+    token = request.headers.get('Authorization') # Bearer xxx
+    if token is None: # Token이 없음
+        return ErrorObject(401, 'No authorization token')
+    
+    try:
+        token = token.split(' ')[1]
+    except: # Token 형태 이상
+        return ErrorObject(401, 'Invalid token format')
+    
+    return auth(token)
 
 app = Flask(__name__)
 
