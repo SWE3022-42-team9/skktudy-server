@@ -13,8 +13,20 @@ def _execute_sql(sql: str) -> dict | SQLAlchemyError:
     #   sql: str
     # returns:
     #   dict | SQLAlchemyError: result | error
-    pass
-
+    session = Session()
+    
+    try:
+        result = session.execute(sql)
+        result_dict = [dict(r) for r in result]
+        session.commit()
+        return result_dict
+    
+    except SQLAlchemyError as e:
+        session.rollback()
+        return e
+    
+    finally:
+        session.close()
 # --------------------------------------------------
 
 # etc.
