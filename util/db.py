@@ -35,26 +35,30 @@ def _execute_sql(sql: str) -> dict | SQLAlchemyError:
 
 # offset과 limit으로 지정된 범위의 Board의 목록을 반환합니다
 def get_board_list(offset: int, limit: int) -> List[Board] | SQLAlchemyError:
-    try:
-        session = Session()
-        res = session.query(Board) \
-                .order_by(Board.id.asc()) \
-                .limit(limit) \
-                .offset(offset) \
-                .all()
-        return res
-    except SQLAlchemyError as e:
-        session.rollback()
-        return e
-    session.close()
+    res: List[Board] | SQLAlchemyError
+    
+    with Session() as session:
+        try:
+            res = session.query(Board) \
+                    .order_by(Board.id.asc()) \
+                    .limit(limit) \
+                    .offset(offset) \
+                    .all()
+        except SQLAlchemyError as e:
+            session.rollback()
+            res = e
+    
+    return res
 
 # Board의 전체 갯수를 반환합니다
 def get_board_list_size() -> int | SQLAlchemyError:
-    try:
-        session = Session()
-        count = session.query(Board).count()
-        return count
-    except SQLAlchemyError as e:
-        session.rollback()
-        return e
-    session.close()
+    count: int | SQLAlchemyError
+    
+    with Session() as session:
+        try:
+            count = session.query(Board).count()
+        except SQLAlchemyError as e:
+            session.rollback()
+            count = e
+    
+    return count
