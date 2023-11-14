@@ -65,7 +65,7 @@ def board_id(uid: str, board_id: str):
         
         return result, 200
     except: # offset 또는 limit이 숫자가 아님
-        return {"message": "Invalid board_id"}, 400
+        return {"message": "Invalid range"}, 404
 
 @app.route('/post/<post_id>')
 @get_uid
