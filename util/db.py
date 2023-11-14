@@ -44,7 +44,9 @@ def get_board_list(offset: int, limit: int) -> List[Board] | SQLAlchemyError:
                 .all()
         return res
     except SQLAlchemyError as e:
+        session.rollback()
         return e
+    session.close()
 
 # Board의 전체 갯수를 반환합니다
 def get_board_list_size() -> int | SQLAlchemyError:
@@ -53,4 +55,6 @@ def get_board_list_size() -> int | SQLAlchemyError:
         count = session.query(Board).count()
         return count
     except SQLAlchemyError as e:
+        session.rollback()
         return e
+    session.close()
