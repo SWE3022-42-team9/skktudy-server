@@ -47,7 +47,25 @@ def board(uid: str):
 @app.route('/board/<board_id>')
 @get_uid
 def board_id(uid: str, board_id: str):
-    pass
+    try:
+        if not board_id.isnumeric(): # 숫자가 아닌 board_id
+            return {"message": "Board does not exist"}, 404
+        
+        board_id = int(board_id)
+        
+        offset = request.args.get('offset', -1, type=int)
+        limit = request.args.get('limit', -1, type=int)
+        
+        if offset == -1 or limit == -1: # offset 또는 limit이 없음
+            return {"message": "Invalid range"}, 404
+        
+        result = board_get(uid, board_id, offset, limit)
+        if isinstance(result, ErrorObject):
+            return result.get_response()
+        
+        return result, 200
+    except: # offset 또는 limit이 숫자가 아님
+        return {"message": "Invalid board_id"}, 400
 
 @app.route('/post/<post_id>')
 @get_uid
