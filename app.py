@@ -42,52 +42,52 @@ Disallow: /
 @app.route('/board')
 @get_uid
 def board(uid: str):
-  pass
+    pass
 
 @app.route('/board/<board_id>')
 @get_uid
 def board_id(uid: str, board_id: str):
-  pass
+    pass
 
 @app.route('/post/<post_id>')
 @get_uid
 def post_id(uid: str, post_id: str):
-  pass
+    pass
 
 @app.route('/post/upload')
 @get_uid
 def post_upload(uid: str):
-  pass
+    pass
 
 @app.route('/post/like')
 @get_uid
 def post_like(uid: str):
-  pass
+    pass
 
 @app.route('/comment/upload')
 @get_uid
 def comment_upload(uid: str):
-  pass
+    pass
 
 @app.route('/comment/delete')
 @get_uid
 def comment_delete(uid: str):
-  pass
+    pass
 
 @app.route('/comment/like')
 @get_uid
 def comment_like(uid: str):
-  pass
+    pass
 
 @app.route('/chatbot/send')
 @get_uid
 def chatbot_send(uid: str):
-  pass
+    pass
 
 @app.route('/chatbot/log')
 @get_uid
 def chatbot_log(uid: str):
-  pass
+    pass
 
 if __name__=="__main__":
     app.run(host="0.0.0.0", debug=True)
