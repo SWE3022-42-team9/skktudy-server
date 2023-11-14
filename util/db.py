@@ -10,6 +10,7 @@ from typing import List
 DB_URL = f"mysql+mysqlconnector://{config['user']}:{config['password']}@{config['host']}:{config['port']}/{config['database']}?charset=utf8mb4&collation=utf8mb4_general_ci"
 
 engine = create_engine(DB_URL) # TODO: Add database URL
+Base.metadata.create_all(engine) #db 테이블 생성
 Session = sessionmaker(bind=engine)
 
 def _execute_sql(sql: str) -> dict | SQLAlchemyError:
