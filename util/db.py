@@ -44,6 +44,7 @@ def get_board_list(offset: int, limit: int) -> List[Board] | SQLAlchemyError:
                     .limit(limit) \
                     .offset(offset) \
                     .all()
+        
         except SQLAlchemyError as e:
             session.rollback()
             res = e
@@ -57,6 +58,7 @@ def get_board_list_size() -> int | SQLAlchemyError:
     with Session() as session:
         try:
             count = session.query(Board).count()
+        
         except SQLAlchemyError as e:
             session.rollback()
             count = e
