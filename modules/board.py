@@ -62,5 +62,5 @@ def board_get(uid: str, board_id: int, offset: int, limit: int) -> dict | ErrorO
             # return ErrorObject(404)
             return ErrorObject(404, 'Out of range')
     
-    # return 게시판 정보
+    # return 게시판 정보 및 게시글 목록
     return jsonify(metadata=metadata, posts=posts)
