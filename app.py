@@ -1,9 +1,31 @@
-from flask import Flask, render_template
+from flask import Flask, render_template, request
 
+from modules.auth import auth
 from modules.board import *
 from modules.post import *
 from modules.comment import *
 from modules.chatbot import *
+
+from util.error_object import ErrorObject
+
+def get_uid(func):
+    def wrapper(*args, **kwargs):
+        token = request.headers.get('Authorization') # Bearer xxx
+        if token is None: # Token이 없음
+            return {"message": "No authorization token"}, 401
+        
+        try:
+            token = token.split(' ')[1]
+        except: # Token 형태 이상
+            return {"message": "Invalid token format"}, 401
+        
+        uid = auth(token)
+        if isinstance(uid, ErrorObject):
+            return uid.get_response()
+        
+        return func(uid, *args, **kwargs)
+    wrapper.__name__ = func.__name__
+    return wrapper
 
 app = Flask(__name__)
 
@@ -18,43 +40,53 @@ Disallow: /
 '''
 
 @app.route('/board')
-def board():
+@get_uid
+def board(uid: str):
     pass
 
 @app.route('/board/<board_id>')
-def board_id(board_id: str):
+@get_uid
+def board_id(uid: str, board_id: str):
     pass
 
 @app.route('/post/<post_id>')
-def post_id(post_id: str):
+@get_uid
+def post_id(uid: str, post_id: str):
     pass
 
 @app.route('/post/upload')
-def post_upload():
+@get_uid
+def post_upload(uid: str):
     pass
 
 @app.route('/post/like')
-def post_like():
+@get_uid
+def post_like(uid: str):
     pass
 
 @app.route('/comment/upload')
-def comment_upload():
+@get_uid
+def comment_upload(uid: str):
     pass
 
 @app.route('/comment/delete')
-def comment_delete():
+@get_uid
+def comment_delete(uid: str):
     pass
 
 @app.route('/comment/like')
-def comment_like():
+@get_uid
+def comment_like(uid: str):
     pass
 
 @app.route('/chatbot/send')
-def chatbot_send():
+@get_uid
+def chatbot_send(uid: str):
     pass
 
 @app.route('/chatbot/log')
-def chatbot_log():
+@get_uid
+def chatbot_log(uid: str):
     pass
 
 if __name__=="__main__":
