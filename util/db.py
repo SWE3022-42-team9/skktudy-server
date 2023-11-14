@@ -2,7 +2,7 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.exc import SQLAlchemyError
 
-from models import *
+from util.models import *
 
 engine = create_engine('') # TODO: Add database URL
 Session = sessionmaker(bind=engine)
