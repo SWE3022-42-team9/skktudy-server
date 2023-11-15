@@ -28,7 +28,7 @@ def comment_upload(uid: str, comment: str, post_id: int) -> int | ErrorObject:
         if not post_exists:
             return ErrorObject(404, "Post does not exist")
         
-        upload_comment_sql = f"INSERT INTO comment (content, date, post_id, user_id) VALUES ({comment}, {uid}, {post_id}, CURRENT_TIMESTAMP)"
+        upload_comment_sql = f"INSERT INTO comment (content, date, post_id, user_id) VALUES ({comment},  CURRENT_TIMESTAMP, {post_id}, {uid})"
         result = db._execute_sql(upload_comment_sql)
         return result.lastrowid
     
