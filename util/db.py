@@ -45,6 +45,26 @@ def is_post_exist(post_id: int) -> bool | SQLAlchemyError:
         except SQLAlchemyError as e:
             session.rollback()
             res = e
+
+    return res
+
+def get_post_comments(post_id: int) -> dict | SQLAlchemyError:
+    res: dict | SQLAlchemyError = {}
+
+    with Session() as session:
+        try:
+            res = session.query(Post) \
+                    .filter(Post.id == post_id) \
+                    .first() \
+                    .to_dict()
+            
+            res["comments"] = session.query(Comment) \
+                    .filter(Comment.post_id == post_id) \
+                    .order_by(Comment.id.desc()) \
+                    .all()
+        except SQLAlchemyError as e:
+            session.rollback()
+            res = e
             
     return res
 
