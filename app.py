@@ -61,7 +61,7 @@ def post_upload(uid: str):
 
 @app.route('/post/like')
 @get_uid
-def post_like(uid: str):
+def post_like_(uid: str):
     post_id = request.args.get('post_id', type=int)
     
     if post_id is None: # post_id가 없음
