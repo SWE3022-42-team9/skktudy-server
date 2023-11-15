@@ -62,16 +62,29 @@ def post_like(uid: str, post_id: int) -> int | ErrorObject:
     #   int | ErrorObject: post_id | ErrorObject
     # --------------------------------------------------
     # DB에서 post_id 존재하는지 확인
+    exists = db.is_post_exist(post_id)
+    if isinstance(exists, db.SQLAlchemyError):
+        return ErrorObject(503, "DB Error: " + exists._message())
     
     # post_id가 존재하지 않는다면
+    if exists is False:
         # return ErrorObject(404)
+        return ErrorObject(404, "Post does not exist")
     
     # DB에서 post_id, user_id를 통해 좋아요 내역 확인
+    dup = db.get_post_like(post_id, uid)
+    if isinstance(dup, db.SQLAlchemyError):
+        return ErrorObject(503, "DB Error: " + dup._message())
     
     # 좋아요 내역이 없다면
+    if dup is False:
         # DB에 좋아요 내역 추가
+        success = db.add_post_like(post_id, uid)
+        if isinstance(success, db.SQLAlchemyError):
+            return ErrorObject(503, "DB Error: " + success._message())
         # return post_id
+        return post_id
     
     # 좋아요 내역이 있다면
         # return ErrorObject(403)
-    pass
+    return ErrorObject(403, "Like duplicated")

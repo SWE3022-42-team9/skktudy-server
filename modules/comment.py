@@ -20,7 +20,21 @@ def comment_upload(uid: str, comment: str, post_id: int) -> int | ErrorObject:
     # post_id가 존재한다면
         # DB에 comment, user_id, post_id+α를 저장
         # return comment_id
-    pass
+    check_post_sql = f"SELECT 1 FROM post WHERE id = {post_id}"
+    
+    try:
+        post_exists = db._execute_sql(check_post_sql)
+        
+        if not post_exists:
+            return ErrorObject(404, "Post does not exist")
+        
+        upload_comment_sql = f"INSERT INTO comment (content, date, post_id, user_id) VALUES ({comment},  CURRENT_TIMESTAMP, {post_id}, {uid})"
+        result = db._execute_sql(upload_comment_sql)
+        return result.lastrowid
+    
+    except SQLAlchemyError as e:
+        return ErrorObject(500, str(e))
+        
     
 
 # /comment/delete
@@ -44,7 +58,25 @@ def comment_delete(uid: str, comment_id: int) -> int | ErrorObject:
             
         # 작성자와 user_id가 다르다면
             # ErrorObject 반환(403)
-    pass
+    check_comment_sql = f"SELECT user_id FROM comment WHERE id = {comment_id}"
+    
+    try:
+        comment = db._execute_sql(check_comment_sql)
+
+        if not comment:
+            return ErrorObject(404, "Comment does not exist")
+
+        else:
+            if comment['user_id'] == uid:
+                delete_comment_sql = f"DELETE FROM comment WHERE id = {comment_id}"
+                db._execute_sql(delete_comment_sql)
+                return comment_id
+            
+            else:
+                return ErrorObject(403, "User is not the author")
+    
+    except SQLAlchemyError as e:
+        return ErrorObject(500, str(e))
     
 
 # /comment/like
@@ -85,7 +117,7 @@ def comment_like(uid: str, comment_id: int) -> int | ErrorObject:
     except SQLAlchemyError as e:
         return ErrorObject(500, "Internal Server Error")
     
-    add_like_sql = f"INSERT INTO comment_like (comment_id, user_id) VALUES ({comment_id}, {user_id})"
+    add_like_sql = f"INSERT INTO comment_like (comment_id, user_id) VALUES ({comment_id}, {uid})"
     
     try:
         comment_add = db._execute_sql(add_like_sql)
@@ -94,7 +126,6 @@ def comment_like(uid: str, comment_id: int) -> int | ErrorObject:
     except IntegrityError: # Composite key 조건 위배(like duplication)
         return ErrorObject(403, "Like duplicated")
     
-    except SQLAlchemyError as e: # 서버 내부 오류
-        return ErrorObject(500, "Internal Server Error")   
-
+    except SQLAlchemyError as e:
+        return ErrorObject(500, str(e))
    
