@@ -30,3 +30,18 @@ def _execute_sql(sql: str) -> dict | SQLAlchemyError:
 # --------------------------------------------------
 
 # etc.
+
+def create_comment(new_comment: Comment) -> dict | SQLAlchemyError:
+    res: dict | SQLAlchemyError
+    
+    res = {"message": "Comment created successfully"}
+    with Session() as session:
+        try:
+            session.add(new_comment)
+            session.commit()
+        
+        except SQLAlchemyError as e:
+            session.rollback()
+            res = e
+    
+    return res
