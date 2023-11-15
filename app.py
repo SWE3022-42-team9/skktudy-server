@@ -52,7 +52,19 @@ def board_id(uid: str, board_id: str):
 @app.route('/post/<post_id>')
 @get_uid
 def post_id(uid: str, post_id: str):
-    pass
+    try:
+        if not post_id.isnumeric():
+            return {"message": "Post does not exist"}, 404
+        
+        post_id = int(post_id)
+        
+        result = post_get(uid, post_id)
+        if isinstance(result, ErrorObject):
+            return result.get_response()
+        
+        return result, 200
+    except:
+        return {"message": "Post does not exist"}, 404
 
 @app.route('/post/upload')
 @get_uid
