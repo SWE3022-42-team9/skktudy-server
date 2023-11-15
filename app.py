@@ -39,52 +39,52 @@ def robot():
 Disallow: /
 '''
 
-@app.route('/board')
+@app.route('/board', methods=['GET'])
 @get_uid
 def board(uid: str):
     pass
 
-@app.route('/board/<board_id>')
+@app.route('/board/<board_id>', methods=['GET'])
 @get_uid
 def board_id(uid: str, board_id: str):
     pass
 
-@app.route('/post/<post_id>')
+@app.route('/post/<post_id>', methods=['GET'])
 @get_uid
 def post_id(uid: str, post_id: str):
     pass
 
-@app.route('/post/upload')
+@app.route('/post/upload', methods=['POST'])
 @get_uid
 def post_upload(uid: str):
     pass
 
-@app.route('/post/like')
+@app.route('/post/like', methods=['POST'])
 @get_uid
 def post_like(uid: str):
     pass
 
-@app.route('/comment/upload')
+@app.route('/comment/upload', methods=['POST'])
 @get_uid
 def comment_upload(uid: str):
     pass
 
-@app.route('/comment/delete')
+@app.route('/comment/delete', methods=['POST'])
 @get_uid
 def comment_delete(uid: str):
     pass
 
-@app.route('/comment/like')
+@app.route('/comment/like', methods=['POST'])
 @get_uid
 def comment_like(uid: str):
     pass
 
-@app.route('/chatbot/send')
+@app.route('/chatbot/send', methods=['POST'])
 @get_uid
 def chatbot_send(uid: str):
     pass
 
-@app.route('/chatbot/log')
+@app.route('/chatbot/log', methods=['GET'])
 @get_uid
 def chatbot_log(uid: str):
     pass
