@@ -1,3 +1,5 @@
+from flask import jsonify
+
 import util.db as db
 from util.error_object import ErrorObject
 
@@ -12,13 +14,22 @@ def post_get(uid: str, board_id: int, post_id: int) -> dict | ErrorObject:
     #   dict | ErrorObject: post | ErrorObject
     # --------------------------------------------------
     # DB에 post_id가 존재하는지 확인
+    exists = db.is_post_exist(post_id)
+    if isinstance(exists, db.SQLAlchemyError):
+        return ErrorObject(503, "DB Error: " + exists._message())
     
     # post_id가 존재하지 않는다면
+    if not exists:
         # return ErrorObject(404)
+        return ErrorObject(404, "Post does not exist")
         
     # post_id가 존재한다면
         # return DB에서 post_id로 지정된 post의 정보
-    pass
+    post = db.get_post(post_id)
+    if isinstance(post, db.SQLAlchemyError):
+        return ErrorObject(503, "DB Error: " + post._message())
+    
+    return jsonify(post)
 
 # /post/upload
 def post_upload(uid: str, post: str, board_id: int, image: str | None) -> int | ErrorObject:
