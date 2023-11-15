@@ -1,5 +1,6 @@
 import util.db as db
 from util.error_object import ErrorObject
+from sqlalchemy.exc import SQLAlchemyError, IntegrityError
 
 # /comment/upload
 def comment_upload(comment: str, user_id: str, post_id: int) -> int | ErrorObject:
@@ -10,6 +11,7 @@ def comment_upload(comment: str, user_id: str, post_id: int) -> int | ErrorObjec
     #   post_id: int
     # returns:
     #   int | ErrorObject: comment_id | ErrorObject
+    pass
     
 
 # /comment/delete
@@ -20,6 +22,7 @@ def comment_delete(comment_id: int, user_id: str) -> int | ErrorObject:
     #   user_id: str
     # returns:
     #   int | ErrorObject: comment_id | ErrorObject
+    pass
     
 
 # /comment/like
