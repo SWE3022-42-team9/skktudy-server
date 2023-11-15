@@ -30,3 +30,19 @@ def _execute_sql(sql: str) -> dict | SQLAlchemyError:
 # --------------------------------------------------
 
 # etc.
+
+def create_post(new_post: Post) -> dict | SQLAlchemyError:
+    res: dict | SQLAlchemyError
+
+    res = {"message": "Post created successfully"}
+    
+    with Session() as session:
+        try:
+            session.add(new_post)
+            session.commit()
+        
+        except SQLAlchemyError as e:
+            session.rollback()
+            res = e
+    
+    return res
