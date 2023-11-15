@@ -20,7 +20,7 @@ def comment_upload(uid: str, comment: str, post_id: int) -> int | ErrorObject:
     # post_id가 존재한다면
         # DB에 comment, user_id, post_id+α를 저장
         # return comment_id
-    check_post_sql = f"SELECT 1 FROM comment WHERE id = {post_id}"
+    check_post_sql = f"SELECT 1 FROM post WHERE id = {post_id}"
     
     try:
         post_exists = db._execute_sql(check_post_sql)
