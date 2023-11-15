@@ -60,6 +60,7 @@ def get_post_comments(post_id: int) -> dict | SQLAlchemyError:
             
             res["comments"] = session.query(Comment) \
                     .filter(Comment.post_id == post_id) \
+                    .order_by(Comment.id.desc()) \
                     .all()
         except SQLAlchemyError as e:
             session.rollback()
