@@ -45,3 +45,21 @@ def create_comment(new_comment: Comment) -> dict | SQLAlchemyError:
             res = e
     
     return res
+
+def delete_comment(comment_id: int) -> dict | SQLAlchemyError:
+    res: dict | SQLAlchemyError
+    
+    res = {"message": "Comment deleted successfully"}
+    with Session() as session:
+        #comment 존재한다고 가정
+        try:
+            comment = session.get(Comment, comment_id)
+
+            session.delete(comment)
+            session.commit()
+        
+        except SQLAlchemyError as e:
+            session.rollback()
+            res = e
+    
+    return res
