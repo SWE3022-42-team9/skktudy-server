@@ -62,7 +62,16 @@ def post_upload(uid: str):
 @app.route('/post/like')
 @get_uid
 def post_like(uid: str):
-    pass
+    post_id = request.args.get('post_id', type=int)
+    
+    if post_id is None: # post_id가 없음
+        return {"message": "No post specified"}, 404
+    
+    result = post_like(uid, post_id)
+    if isinstance(result, ErrorObject):
+        return result.get_response()
+    
+    return {"post_id": result}, 200
 
 @app.route('/comment/upload')
 @get_uid
