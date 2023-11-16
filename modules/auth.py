@@ -1,6 +1,13 @@
 import util.db as db
 from util.error_object import ErrorObject
 
+import firebase_admin
+from firebase_admin import credentials, auth
+import os
+
+cred = credentials.Certificate(os.environ.get('FIREBASE_CREDS_PATH')) # TODO: Add Firebase Admin SDK JSON file path
+firebase_admin.initialize_app(cred)
+
 # 토큰 인증
 def auth(token: str) -> str | ErrorObject:
     # TODO: Implement
