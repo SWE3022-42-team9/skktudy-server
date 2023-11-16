@@ -105,8 +105,21 @@ def post_like_(uid: str):
 
 @app.route('/comment/upload', methods=['POST'])
 @get_uid
-def comment_upload(uid: str):
-    pass
+def comment_upload_(uid: str):
+    content = request.args.get('content', '', type=str)
+    post_id = request.args.get('post_id', type=int)
+    
+    if post_id is None:
+        return {"message": "No post specified"}, 404
+    if len(content) == 0:
+        return {"message": "Empty comment"}, 404
+    
+    result = comment_upload(uid, content, post_id)
+    
+    if isinstance(result, ErrorObject):
+        return result.get_response()
+    
+    return {"id": result}, 200
 
 @app.route('/comment/delete', methods=['POST'])
 @get_uid
