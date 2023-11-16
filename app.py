@@ -110,8 +110,17 @@ def comment_upload(uid: str):
 
 @app.route('/comment/delete', methods=['POST'])
 @get_uid
-def comment_delete(uid: str):
-    pass
+def comment_delete_(uid: str):
+    comment_id = request.args.get('id', type=int)
+    
+    if comment_id is None:
+        return {"message": "No comment specified"}, 404
+    
+    result = comment_delete(uid, comment_id)
+    if isinstance(result, ErrorObject):
+        return result.get_response()
+    
+    return {}, 200
 
 @app.route('/comment/like', methods=['POST'])
 @get_uid
