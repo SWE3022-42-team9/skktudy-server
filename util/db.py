@@ -149,3 +149,18 @@ def get_board_posts_count(board_id: int) -> int | SQLAlchemyError:
             res = e
     
     return res
+
+# board_id에 해당하는 board가 존재하는지 확인
+def is_board_exist(board_id: int) -> bool | SQLAlchemyError:
+    res: bool | SQLAlchemyError
+    
+    with Session() as session:
+        try:
+            res = session.query(Board) \
+                    .filter(Board.id == board_id) \
+                    .first() is not None
+        except SQLAlchemyError as e:
+            session.rollback()
+            res = e
+
+    return res
