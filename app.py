@@ -71,7 +71,7 @@ def board_id(uid: str, board_id: str):
 @get_uid
 def post_id(uid: str, post_id: str):
     try:
-        if not post_id.isnumeric():
+        if not post_id.isnumeric(): # 숫자가 아닌 post_id
             return {"message": "Post does not exist"}, 404
         
         post_id = int(post_id)
@@ -109,9 +109,9 @@ def comment_upload_(uid: str):
     content = request.args.get('content', '', type=str)
     post_id = request.args.get('post_id', type=int)
     
-    if post_id is None:
+    if post_id is None: # post_id가 없음
         return {"message": "No post specified"}, 404
-    if len(content) == 0:
+    if len(content) == 0: # content가 없음
         return {"message": "Empty comment"}, 404
     
     result = comment_upload(uid, content, post_id)
@@ -126,7 +126,7 @@ def comment_upload_(uid: str):
 def comment_delete_(uid: str):
     comment_id = request.args.get('id', type=int)
     
-    if comment_id is None:
+    if comment_id is None: # comment_id가 없음
         return {"message": "No comment specified"}, 404
     
     result = comment_delete(uid, comment_id)
@@ -140,7 +140,7 @@ def comment_delete_(uid: str):
 def comment_like_(uid: str):
     comment_id = request.args.get('id', type=int)
     
-    if comment_id is None:
+    if comment_id is None: # comment_id가 없음
         return {"message": "No comment specified"}, 404
     
     result = comment_like(uid, comment_id)
