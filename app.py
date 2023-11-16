@@ -124,8 +124,17 @@ def comment_delete_(uid: str):
 
 @app.route('/comment/like', methods=['POST'])
 @get_uid
-def comment_like(uid: str):
-    pass
+def comment_like_(uid: str):
+    comment_id = request.args.get('id', type=int)
+    
+    if comment_id is None:
+        return {"message": "No comment specified"}, 404
+    
+    result = comment_like(uid, comment_id)
+    if isinstance(result, ErrorObject):
+        return result.get_response()
+    
+    return {}, 200
 
 @app.route('/chatbot/send', methods=['POST'])
 @get_uid
