@@ -40,13 +40,11 @@ Disallow: /
 '''
 
 @app.route('/board', methods=['GET'])
-@get_uid
-def board(uid: str):
+def board():
     pass
 
 @app.route('/board/<board_id>', methods=['GET'])
-@get_uid
-def board_id(uid: str, board_id: str):
+def board_id(board_id: str):
     try:
         if not board_id.isnumeric(): # 숫자가 아닌 board_id
             return {"message": "Board does not exist"}, 404
@@ -68,8 +66,7 @@ def board_id(uid: str, board_id: str):
         return {"message": "Invalid range"}, 404
 
 @app.route('/post/<post_id>', methods=['GET'])
-@get_uid
-def post_id(uid: str, post_id: str):
+def post_id(post_id: str):
     try:
         if not post_id.isnumeric():
             return {"message": "Post does not exist"}, 404
