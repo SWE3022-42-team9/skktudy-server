@@ -41,6 +41,11 @@ def authenticate(token: str) -> str | ErrorObject:
             result = db.add_user(decoded_token['uid'], decoded_token['name'], token)
             if isinstance(result, db.SQLAlchemyError):
                 return ErrorObject(503, "DB Error: " + result._message())
+        else:
+            # DB에 uid 및 token 정보로 데이터 갱신
+            result = db.update_user(decoded_token['uid'], decoded_token['name'], token)
+            if isinstance(result, db.SQLAlchemyError):
+                return ErrorObject(503, "DB Error: " + result._message())
 
     # return uid
     return uid
