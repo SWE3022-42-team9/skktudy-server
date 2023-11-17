@@ -196,3 +196,19 @@ def add_user(uid: str, name: str, token: str) -> bool | SQLAlchemyError:
             res = e
     
     return res
+
+def update_user(uid: str, name: str, token: str) -> bool | SQLAlchemyError:
+    res: bool | SQLAlchemyError = False
+    
+    with Session() as session:
+        try:
+            session.query(User) \
+                    .filter(User.id == uid) \
+                    .update({"token": token, "name": name})
+            session.commit()
+            res = True
+        except SQLAlchemyError as e:
+            session.rollback()
+            res = e
+    
+    return res
