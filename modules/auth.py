@@ -9,7 +9,7 @@ cred = credentials.Certificate(os.environ.get('FIREBASE_CREDS_PATH')) # TODO: Ad
 firebase_admin.initialize_app(cred)
 
 # 토큰 인증
-def auth(token: str) -> str | ErrorObject:
+def authenticate(token: str) -> str | ErrorObject:
     # TODO: Implement
     # parameters:
     #   token: str

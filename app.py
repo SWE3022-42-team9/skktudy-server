@@ -1,6 +1,6 @@
 from flask import Flask, render_template, request
 
-from modules.auth import auth
+from modules.auth import authenticate
 from modules.board import *
 from modules.post import *
 from modules.comment import *
@@ -19,7 +19,7 @@ def get_uid(func):
         except: # Token 형태 이상
             return {"message": "Invalid token format"}, 401
         
-        uid = auth(token)
+        uid = authenticate(token)
         if isinstance(uid, ErrorObject):
             return uid.get_response()
         
