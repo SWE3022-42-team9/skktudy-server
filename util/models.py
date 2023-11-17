@@ -42,6 +42,17 @@ class Post(Base):
 
     comments = relationship('Comment')
     postlikes = relationship('PostLike')
+    
+    def to_dict(self):
+        return {
+            'id': self.id,
+            'title': self.title,
+            'content': self.content,
+            'image': self.image,
+            'date': self.date,
+            'board_id': self.board_id,
+            'user_id': self.user_id
+        }
 
 class Comment(Base):
     __tablename__ = 'comment'
