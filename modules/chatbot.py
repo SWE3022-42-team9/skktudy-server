@@ -53,7 +53,7 @@ def chatbot_log(uid: str) -> dict | ErrorObject:
         }
         """
         
-        for i in range(0, len(memory), 2):
+        for i in range(0, len(inst_memory), 2):
             log[int(i/2)] = [
                 {
                     inst_memory[i].type: inst_memory[i].content
