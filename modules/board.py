@@ -4,7 +4,7 @@ import util.db as db
 from util.error_object import ErrorObject
 
 # /board
-def board_list(uid: str, offset: int, limit: int) -> dict | ErrorObject:
+def board_list(offset: int, limit: int) -> dict | ErrorObject:
     # TODO: Implement
     # parameters:
     #   uid: str
@@ -34,7 +34,7 @@ def board_list(uid: str, offset: int, limit: int) -> dict | ErrorObject:
     return jsonify(data=board_list)
 
 # /board/{BOARD_ID}
-def board_get(uid: str, board_id: int, offset: int, limit: int) -> dict | ErrorObject:
+def board_get(board_id: int, offset: int, limit: int) -> dict | ErrorObject:
     # TODO: Implement
     # parameters:
     #   uid: str

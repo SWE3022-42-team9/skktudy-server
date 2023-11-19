@@ -40,8 +40,7 @@ Disallow: /
 '''
 
 @app.route('/board', methods=['GET'])
-@get_uid
-def board(uid: str):
+def board():
     try:
         offset = request.args.get('offset', -1, type=int)
         limit = request.args.get('limit', -1, type=int)
@@ -49,7 +48,7 @@ def board(uid: str):
         if offset < 0 or limit < 0: # offset 또는 limit이 없거나 음수임
             return {"message": "Invalid range"}, 404
         
-        result = board_list(uid, offset, limit)
+        result = board_list(offset, limit)
         if isinstance(result, ErrorObject):
             return result.get_response()
         
@@ -58,8 +57,7 @@ def board(uid: str):
         return {"message": "Invalid range"}, 404
 
 @app.route('/board/<board_id>', methods=['GET'])
-@get_uid
-def board_id(uid: str, board_id: str):
+def board_id(board_id: str):
     try:
         if not board_id.isnumeric(): # 숫자가 아닌 board_id
             return {"message": "Board does not exist"}, 404
@@ -72,7 +70,7 @@ def board_id(uid: str, board_id: str):
         if offset < 0 or limit < 0: # offset 또는 limit이 없거나 음수임
             return {"message": "Invalid range"}, 404
         
-        result = board_get(uid, board_id, offset, limit)
+        result = board_get(board_id, offset, limit)
         if isinstance(result, ErrorObject):
             return result.get_response()
         
@@ -81,15 +79,14 @@ def board_id(uid: str, board_id: str):
         return {"message": "Invalid range"}, 404
 
 @app.route('/post/<post_id>', methods=['GET'])
-@get_uid
-def post_id(uid: str, post_id: str):
+def post_id(post_id: str):
     try:
         if not post_id.isnumeric(): # 숫자가 아닌 post_id
             return {"message": "Post does not exist"}, 404
         
         post_id = int(post_id)
         
-        result = post_get(uid, post_id)
+        result = post_get(post_id)
         if isinstance(result, ErrorObject):
             return result.get_response()
         
