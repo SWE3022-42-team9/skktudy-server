@@ -4,11 +4,10 @@ import util.db as db
 from util.error_object import ErrorObject
 
 # /post/{POST_ID}
-def post_get(uid: str, board_id: int, post_id: int) -> dict | ErrorObject:
+def post_get(uid: str, post_id: int) -> dict | ErrorObject:
     # TODO: Implement
     # parameters:
     #   uid: str
-    #   board_id: int
     #   post_id: int
     # returns:
     #   dict | ErrorObject: post | ErrorObject
