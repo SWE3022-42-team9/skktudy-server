@@ -20,13 +20,15 @@ def comment_upload(uid: str, comment: str, post_id: int) -> int | ErrorObject:
     # post_id가 존재한다면
         # DB에 comment, user_id, post_id+α를 저장
         # return comment_id
+        
+        
     check_post_sql = f"SELECT 1 FROM post WHERE id = {post_id}"
     
     try:
         post_exists = db._execute_sql(check_post_sql)
         
         if not post_exists:
-            return ErrorObject(404, "Post does not exist")
+            return ErrorObject(404, "Post does not exist") #해당 댓글을 달기 위한 post가 주어지지 않음
         
         upload_comment_sql = f"INSERT INTO comment (content, date, post_id, user_id) VALUES ({comment},  CURRENT_TIMESTAMP, {post_id}, {uid})"
         result = db._execute_sql(upload_comment_sql)
@@ -58,13 +60,15 @@ def comment_delete(uid: str, comment_id: int) -> int | ErrorObject:
             
         # 작성자와 user_id가 다르다면
             # ErrorObject 반환(403)
+     
+    
     check_comment_sql = f"SELECT user_id FROM comment WHERE id = {comment_id}"
     
     try:
         comment = db._execute_sql(check_comment_sql)
 
         if not comment:
-            return ErrorObject(404, "Comment does not exist")
+            return ErrorObject(404, "Comment does not exist") #ID로 지정된 댓글이 존재하지 않음
 
         else:
             if comment['user_id'] == uid:
@@ -73,7 +77,7 @@ def comment_delete(uid: str, comment_id: int) -> int | ErrorObject:
                 return comment_id
             
             else:
-                return ErrorObject(403, "User is not the author")
+                return ErrorObject(403, "User is not the author") #삭제를 요청한 유저와 댓글의 작성자가 다름
     
     except SQLAlchemyError as e:
         return ErrorObject(500, str(e))
@@ -104,7 +108,6 @@ def comment_like(uid: str, comment_id: int) -> int | ErrorObject:
         # return ErrorObject(403)
 
 
-
     # 해당하는 comment_id가 있는지 체크
     comment_exist_chk_sql = f"SELECT 1 FROM comment WHERE id = {comment_id}"
     
@@ -112,10 +115,10 @@ def comment_like(uid: str, comment_id: int) -> int | ErrorObject:
         comment_exists = db._execute_sql(comment_exist_chk_sql)
         
         if not comment_exists:
-            return ErrorObject(404, "Comment does not exist")
+            return ErrorObject(404, "Comment does not exist") #ID로 지정된 댓글이 존재하지 않음
         
     except SQLAlchemyError as e:
-        return ErrorObject(500, "Internal Server Error")
+        return ErrorObject(500, str(e))
     
     add_like_sql = f"INSERT INTO comment_like (comment_id, user_id) VALUES ({comment_id}, {uid})"
     
@@ -124,7 +127,7 @@ def comment_like(uid: str, comment_id: int) -> int | ErrorObject:
         return comment_id # 성공시 comment_id 반환
     
     except IntegrityError: # Composite key 조건 위배(like duplication)
-        return ErrorObject(403, "Like duplicated")
+        return ErrorObject(403, "Like duplicated") # 이미 좋아요를 누른 댓글에 중복으로 좋아요를 시도
     
     except SQLAlchemyError as e:
         return ErrorObject(500, str(e))
