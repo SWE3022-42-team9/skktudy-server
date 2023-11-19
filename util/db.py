@@ -9,7 +9,7 @@ from util.models import *
 
 from typing import List
 
-DB_URL = f"mysql+mysqlconnector://{config['user']}:{config['password']}@{config['host']}:{config['port']}/{config['database']}?charset=utf8mb4&collation=utf8mb4_general_ci"
+DB_URL = f"mysql+mysqlconnector://{os.environ.get('USER')}:{os.environ.get('PASSWORD')}@{os.environ.get('HOST')}:{os.environ.get('PORT')}/{os.environ.get('DATABASE')}?charset=utf8mb4&collation=utf8mb4_general_ci"
 
 engine = create_engine(DB_URL) # TODO: Add database URL
 Base.metadata.create_all(engine) #db 테이블 생성
