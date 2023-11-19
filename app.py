@@ -106,27 +106,66 @@ def post_like_(uid: str):
 @app.route('/comment/upload', methods=['POST'])
 @get_uid
 def comment_upload(uid: str):
-    pass
+    post_id = request.args.get('post_id', type=int) # request에서 post_id를 포함시키는 게 가능한지?
+    content = request.args.get('content', type=str)
+    
+    result = comment_upload(uid, content, post_id)
+    
+    if isinstance(result, ErrorObject):
+        return result.get_response()
+    
+    return {"id", result}, 200
 
 @app.route('/comment/delete', methods=['POST'])
 @get_uid
 def comment_delete(uid: str):
-    pass
+    comment_id = request.args.get('id', type=int)
+    
+    result = comment_delete(uid, comment_id)
+    
+    if isinstance(result, ErrorObject):
+        return result.get_response()
+    
+    return {"id", result}, 200
+
 
 @app.route('/comment/like', methods=['POST'])
 @get_uid
 def comment_like(uid: str):
-    pass
+    comment_id = request.args.get('id', type=int)
+    
+    result = comment_like(uid, comment_id)
+    
+    if isinstance(result, ErrorObject):
+        return result.get_response()
+    
+    return {"id", result}, 200
 
 @app.route('/chatbot/send', methods=['POST'])
 @get_uid
 def chatbot_send(uid: str):
-    pass
+    message = request.args.get('message', type=str)
+    image = request.args.get('image', type=str) #image temporary
+    
+    result = chatbot_send(uid, message, image)
+    
+    if isinstance(result, ErrorObject):
+        return result.get_response()
+    
+    return result, 200
 
 @app.route('/chatbot/log', methods=['GET'])
 @get_uid
 def chatbot_log(uid: str):
-    pass
+    try:
+        result = chatbot_log(uid)
+        if isinstance(result, ErrorObject):
+            return result.get_response()
+        return result, 200
+    except:
+        return {"message": "failed to get chatbot log"}, 500
+        
+        
 
 if __name__=="__main__":
     app.run(host="0.0.0.0", debug=True)
