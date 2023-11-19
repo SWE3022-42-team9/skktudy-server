@@ -81,13 +81,13 @@ def get_post_comments(post_id: int) -> dict | SQLAlchemyError:
 
     with Session() as session:
         try:
-            res = session.query(Post.id, Post.title, Post.content, Post.image, Post.date, Post.board_id, User.name.label('user')) \
+            res["data"] = session.query(Post, User.name.label('user')) \
                     .outerjoin(User, Post.user_id == User.id) \
                     .filter(Post.id == post_id) \
                     .first() \
-                    .to_dict()
+                    .tuple()
             
-            res["comments"] = session.query(Comment.id, Comment.content, Comment.date, Comment.post_id, User.name.label('user')) \
+            res["comments"] = session.query(Comment, User.name.label('user')) \
                     .outerjoin(User, Comment.user_id == User.id) \
                     .filter(Comment.post_id == post_id) \
                     .order_by(Comment.id.desc()) \
@@ -165,7 +165,7 @@ def get_board_posts(board_id: int, offset: int, limit: int) -> List[Row[Post, Us
     
     with Session() as session:
         try:
-            res = session.query(Post.id, Post.title, Post.content, Post.image, Post.date, Post.board_id, User.name.label('user')) \
+            res = session.query(Post, User.name) \
                     .outerjoin(User, Post.user_id == User.id) \
                     .filter(Post.board_id == board_id) \
                     .order_by(Post.id.desc()) \

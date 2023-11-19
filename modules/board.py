@@ -29,9 +29,20 @@ def board_list(offset: int, limit: int) -> dict | ErrorObject:
         if offset >= board_size:
             # ErrorObject 반환(404)
             return ErrorObject(404, 'Out of range')
+    
+    data = []
+    for board in board_list:
+        data.append({
+            'board_id': board.id,
+            'course_name': board.course_name,
+            'course_num': board.course_num,
+            'professor': board.professor,
+            'semester_year': board.semester_year,
+            'semester_num': board.semester_num
+        })
 
     # return 게시판 목록
-    return jsonify(data=board_list)
+    return jsonify(data=data)
 
 # /board/{BOARD_ID}
 def board_get(board_id: int, offset: int, limit: int) -> dict | ErrorObject:
@@ -71,5 +82,27 @@ def board_get(board_id: int, offset: int, limit: int) -> dict | ErrorObject:
             # return ErrorObject(404)
             return ErrorObject(404, 'Out of range')
     
+    data = {
+        'board_id': metadata.id,
+        'course_name': metadata.course_name,
+        'course_num': metadata.course_num,
+        'professor': metadata.professor,
+        'semester_year': metadata.semester_year,
+        'semester_num': metadata.semester_num
+    }
+    
+    post_data = []
+    for post in post_data:
+        post = post.tuple()
+        post_data.append({
+            'post_id': post[0].id,
+            'title': post[0].title,
+            'content': post[0].content,
+            'image': post[0].image,
+            'date': post[0].date,
+            'board_id': post[0].board_id,
+            'user': post[1]
+        })
+
     # return 게시판 정보 및 게시글 목록
-    return jsonify(metadata=metadata, posts=posts)
+    return jsonify(metadata=data, posts=posts)

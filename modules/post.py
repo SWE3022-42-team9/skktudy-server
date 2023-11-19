@@ -28,6 +28,30 @@ def post_get(post_id: int) -> dict | ErrorObject:
     if isinstance(post, db.SQLAlchemyError):
         return ErrorObject(503, "DB Error: " + post._message())
     
+    result = {}
+    post_data = post["data"]
+    
+    result = {
+        "post_id": post_data[0].id,
+        "title": post_data[0].title,
+        "content": post_data[0].content,
+        "image": post_data[0].image,
+        "date": post_data[0].date,
+        "board_id": post_data[0].board_id,
+        "user": post_data[1],
+        "comments": []
+    }
+    
+    for comment in post["comments"]:
+        comment = comment.tuple()
+        result["comments"].append({
+            "comment_id": comment[0].id,
+            "content": comment[0].content,
+            "date": comment[0].date,
+            "post_id": comment[0].post_id,
+            "user": comment[1]
+        })
+    
     return jsonify(post)
 
 # /post/upload
