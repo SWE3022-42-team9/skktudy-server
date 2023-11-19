@@ -159,7 +159,7 @@ def chatbot_send_(uid: str):
     if isinstance(result, ErrorObject):
         return result.get_response()
     
-    return result, 200
+    return {"message" : result}, 200
 
 @app.route('/chatbot/log', methods=['GET'])
 @get_uid
