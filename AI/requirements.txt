@@ -1,0 +1,12 @@
+langchain
+openai
+python-dotenv
+pypdf
+streamlit
+unstructured
+pdfminer.six
+pdf2image
+unstructured_inference
+pytesseract
+faiss-cpu
+tiktoken
