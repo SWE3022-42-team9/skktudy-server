@@ -48,7 +48,7 @@ def board():
         if offset < 0 or limit < 0: # offset 또는 limit이 없거나 음수임
             return {"message": "Invalid range"}, 404
         
-        result = board_list(uid, offset, limit)
+        result = board_list(offset, limit)
         if isinstance(result, ErrorObject):
             return result.get_response()
         
@@ -70,7 +70,7 @@ def board_id(board_id: str):
         if offset < 0 or limit < 0: # offset 또는 limit이 없거나 음수임
             return {"message": "Invalid range"}, 404
         
-        result = board_get(uid, board_id, offset, limit)
+        result = board_get(board_id, offset, limit)
         if isinstance(result, ErrorObject):
             return result.get_response()
         
