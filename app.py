@@ -42,7 +42,20 @@ Disallow: /
 @app.route('/board', methods=['GET'])
 @get_uid
 def board(uid: str):
-    pass
+    try:
+        offset = request.args.get('offset', -1, type=int)
+        limit = request.args.get('limit', -1, type=int)
+    
+        if offset < 0 or limit < 0: # offset 또는 limit이 없거나 음수임
+            return {"message": "Invalid range"}, 404
+        
+        result = board_list(uid, offset, limit)
+        if isinstance(result, ErrorObject):
+            return result.get_response()
+        
+        return result, 200
+    except: # offset 또는 limit이 숫자가 아님
+        return {"message": "Invalid range"}, 404
 
 @app.route('/board/<board_id>', methods=['GET'])
 @get_uid

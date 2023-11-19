@@ -37,6 +37,22 @@ def _execute_sql(sql: str) -> dict | SQLAlchemyError:
 
 # etc.
 
+# offset과 limit으로 지정된 범위의 Board의 목록을 반환합니다
+def get_board_list(offset: int, limit: int) -> List[Board] | SQLAlchemyError:
+    res: List[Board] | SQLAlchemyError
+    
+    with Session() as session:
+        try:
+            res = session.query(Board) \
+                    .order_by(Board.id.asc()) \
+                    .limit(limit) \
+                    .offset(offset) \
+                    .all()
+        except SQLAlchemyError as e:
+            session.rollback()
+            res = e
+    
+    return res
 # post_id에 해당하는 post가 존재하는지 확인
 def is_post_exist(post_id: int) -> bool | SQLAlchemyError:
     res: bool | SQLAlchemyError
@@ -117,6 +133,20 @@ def get_board_metadata(board_id: int) -> Board | SQLAlchemyError | None:
             res = e
     
     return res
+
+# Board의 전체 갯수를 반환합니다
+def get_board_list_size() -> int | SQLAlchemyError:
+    count: int | SQLAlchemyError
+    
+    with Session() as session:
+        try:
+            count = session.query(Board).count()
+        
+        except SQLAlchemyError as e:
+            session.rollback()
+            count = e
+    
+    return count
 
 # board_id로 지정된 board의 metadata와 offset과 limit으로 지정된 범위의 게시글 목록을 반환합니다
 def get_board_posts(board_id: int, offset: int, limit: int) -> List[Post] | SQLAlchemyError:
