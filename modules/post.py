@@ -15,7 +15,7 @@ def post_get(post_id: int) -> dict | ErrorObject:
     # DB에 post_id가 존재하는지 확인
     exists = db.is_post_exist(post_id)
     if isinstance(exists, db.SQLAlchemyError):
-        return ErrorObject(503, "DB Error: " + exists._message())
+        return ErrorObject(500, "DB Error: " + str(exists))
     
     # post_id가 존재하지 않는다면
     if not exists:
@@ -26,7 +26,7 @@ def post_get(post_id: int) -> dict | ErrorObject:
         # return DB에서 post_id로 지정된 post의 정보
     post = db.get_post_comments(post_id)
     if isinstance(post, db.SQLAlchemyError):
-        return ErrorObject(503, "DB Error: " + post._message())
+        return ErrorObject(500, "DB Error: " + str(post))
     
     return jsonify(post)
 
@@ -44,7 +44,7 @@ def post_upload(uid: str, title: str, content: str, board_id: int, image: str | 
     # DB에 board_id가 존재하는지 확인
     exists = db.is_board_exist(board_id)
     if isinstance(exists, db.SQLAlchemyError):
-        return ErrorObject(503, "DB Error: " + exists._message())
+        return ErrorObject(500, "DB Error: " + str(exists))
 
     # board_id가 존재하지 않는다면
     if not exists:
@@ -74,7 +74,7 @@ def post_like(uid: str, post_id: int) -> int | ErrorObject:
     # DB에서 post_id 존재하는지 확인
     exists = db.is_post_exist(post_id)
     if isinstance(exists, db.SQLAlchemyError):
-        return ErrorObject(503, "DB Error: " + exists._message())
+        return ErrorObject(500, "DB Error: " + str(exists))
     
     # post_id가 존재하지 않는다면
     if exists is False:
@@ -84,14 +84,14 @@ def post_like(uid: str, post_id: int) -> int | ErrorObject:
     # DB에서 post_id, user_id를 통해 좋아요 내역 확인
     dup = db.get_post_like(post_id, uid)
     if isinstance(dup, db.SQLAlchemyError):
-        return ErrorObject(503, "DB Error: " + dup._message())
+        return ErrorObject(500, "DB Error: " + str(dup))
     
     # 좋아요 내역이 없다면
     if dup is False:
         # DB에 좋아요 내역 추가
         success = db.add_post_like(post_id, uid)
         if isinstance(success, db.SQLAlchemyError):
-            return ErrorObject(503, "DB Error: " + success._message())
+            return ErrorObject(500, "DB Error: " + str(success))
         # return post_id
         return post_id
     
