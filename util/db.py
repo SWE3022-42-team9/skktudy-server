@@ -1,4 +1,4 @@
-from sqlalchemy import create_engine
+from sqlalchemy import create_engine, text, Row
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.exc import SQLAlchemyError
 
@@ -68,17 +68,20 @@ def is_post_exist(post_id: int) -> bool | SQLAlchemyError:
 
     return res
 
+# post_id에 해당하는 post의 metadata와 댓글 목록과 작성자 이름을 반환합니다
 def get_post_comments(post_id: int) -> dict | SQLAlchemyError:
     res: dict | SQLAlchemyError = {}
 
     with Session() as session:
         try:
-            res = session.query(Post) \
+            res = session.query(Post.id, Post.title, Post.content, Post.image, Post.date, Post.board_id, User.name.label('author')) \
+                    .outerjoin(User, Post.user_id == User.id) \
                     .filter(Post.id == post_id) \
                     .first() \
                     .to_dict()
             
-            res["comments"] = session.query(Comment) \
+            res["comments"] = session.query(Comment.id, Comment.content, Comment.date, Comment.post_id, User.name.label('author')) \
+                    .outerjoin(User, Comment.user_id == User.id) \
                     .filter(Comment.post_id == post_id) \
                     .order_by(Comment.id.desc()) \
                     .all()
@@ -148,14 +151,15 @@ def get_board_list_size() -> int | SQLAlchemyError:
     
     return count
 
-# board_id로 지정된 board의 metadata와 offset과 limit으로 지정된 범위의 게시글 목록을 반환합니다
-def get_board_posts(board_id: int, offset: int, limit: int) -> List[Post] | SQLAlchemyError:
+# board_id로 지정된 board의 metadata와 offset과 limit으로 지정된 범위의 게시글 목록과 작성자 이름을 반환합니다
+def get_board_posts(board_id: int, offset: int, limit: int) -> List[Row[Post, User.name]] | SQLAlchemyError:
     # get_board_metadata 호출 후 사용하기 때문에 board_id로 지정된 board가 존재한다고 가정합니다
-    res: List[Post] | SQLAlchemyError
+    res: List[Row[Post, User.name]] | SQLAlchemyError
     
     with Session() as session:
         try:
-            res = session.query(Post) \
+            res = session.query(Post.id, Post.title, Post.content, Post.image, Post.date, Post.board_id, User.name.label('author')) \
+                    .outerjoin(User, Post.user_id == User.id) \
                     .filter(Post.board_id == board_id) \
                     .order_by(Post.id.desc()) \
                     .offset(offset) \
