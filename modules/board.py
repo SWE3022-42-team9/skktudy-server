@@ -26,7 +26,7 @@ def board_list(offset: int, limit: int) -> dict | ErrorObject:
             return ErrorObject(500, 'DB Error: ' + str(board_size))
         
         # offset이 게시판 갯수보다 크다면
-        if offset >= board_size:
+        if offset >= board_size and board_size != 0:
             # ErrorObject 반환(404)
             return ErrorObject(404, 'Out of range')
     
