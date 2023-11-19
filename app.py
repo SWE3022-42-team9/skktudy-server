@@ -151,7 +151,7 @@ def comment_upload_(uid: str):
 @app.route('/comment/delete', methods=['POST'])
 @get_uid
 def comment_delete_(uid: str):
-    comment_id = request.args.get('id', type=int)
+    comment_id = request.args.get('comment_id', type=int)
     
     if comment_id is None: # comment_id가 없음
         return {"message": "No comment specified"}, 404
@@ -165,7 +165,7 @@ def comment_delete_(uid: str):
 @app.route('/comment/like', methods=['POST'])
 @get_uid
 def comment_like_(uid: str):
-    comment_id = request.args.get('id', type=int)
+    comment_id = request.args.get('comment_id', type=int)
     
     if comment_id is None: # comment_id가 없음
         return {"message": "No comment specified"}, 404
