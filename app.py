@@ -96,8 +96,26 @@ def post_id(post_id: str):
 
 @app.route('/post/upload', methods=['POST'])
 @get_uid
-def post_upload(uid: str):
-    pass
+def post_upload_(uid: str):
+    title = request.args.get('title', '', type=str)
+    content = request.args.get('content', '', type=str)
+    board_id = request.args.get('board_id', type=int)
+    image = request.args.get('image', None, type=str)
+    
+    if board_id is None:
+        return {"message": "No board specified"}, 404
+    
+    if len(title) == 0 or len(content) == 0:
+        return {"message": "Empty content"}, 404
+    
+    if image is not None and len(image) == 0:
+        image = None
+    
+    result = post_upload(uid, title, content, board_id, image)
+    if isinstance(result, ErrorObject):
+        return result.get_response()
+    
+    return {"id": result}, 200
 
 @app.route('/post/like', methods=['POST'])
 @get_uid
