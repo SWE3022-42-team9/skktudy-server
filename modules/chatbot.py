@@ -16,7 +16,7 @@ def chatbot_send(uid: str, message: str, image: str | None) -> str | ErrorObject
     
     # if invalid uid chatbot instance requested
     if uid not in chatbots:
-        return ErrorObject(404, "Corresponding chatbot instances to uid not found")
+        return ErrorObject(500, "Corresponding chatbot instances to uid not found")
     else:
         # else, call chatbot call
         response = chatbots[uid](messages=message)
@@ -33,7 +33,7 @@ def chatbot_log(uid: str) -> dict | ErrorObject:
     # check current memory usage by psutil
     memory_usage = psutil.virtual.memory().percent
     if memory_usage > 90:
-        return ErrorObject(404, "Memory exceeded, cannot create new chatbot instances")
+        return ErrorObject(500, "Memory exceeded, cannot create new chatbot instances")
 
     # return type will be dict
     log = {}
