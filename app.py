@@ -1,6 +1,6 @@
 from flask import Flask, render_template, request
 
-from modules.auth import auth
+from modules.auth import authenticate
 from modules.board import *
 from modules.post import *
 from modules.comment import *
@@ -19,7 +19,7 @@ def get_uid(func):
         except: # Token 형태 이상
             return {"message": "Invalid token format"}, 401
         
-        uid = auth(token)
+        uid = authenticate(token)
         if isinstance(uid, ErrorObject):
             return uid.get_response()
         
@@ -40,23 +40,24 @@ Disallow: /
 '''
 
 @app.route('/board', methods=['GET'])
-@get_uid
-def board(uid: str):
-    offset = request.args.get('offset', -1, type=int)
-    limit = request.args.get('limit', -1, type=int)
+def board():
+    try:
+        offset = request.args.get('offset', -1, type=int)
+        limit = request.args.get('limit', -1, type=int)
     
-    if offset < 0 or limit < 0: # offset 또는 limit이 없거나 음수임
+        if offset < 0 or limit < 0: # offset 또는 limit이 없거나 음수임
+            return {"message": "Invalid range"}, 404
+        
+        result = board_list(offset, limit)
+        if isinstance(result, ErrorObject):
+            return result.get_response()
+        
+        return result, 200
+    except: # offset 또는 limit이 숫자가 아님
         return {"message": "Invalid range"}, 404
-    
-    result = board_list(uid, offset, limit)
-    if isinstance(result, ErrorObject):
-        return result.get_response()
-    
-    return result, 200
 
 @app.route('/board/<board_id>', methods=['GET'])
-@get_uid
-def board_id(uid: str, board_id: str):
+def board_id(board_id: str):
     try:
         if not board_id.isnumeric(): # 숫자가 아닌 board_id
             return {"message": "Board does not exist"}, 404
@@ -69,7 +70,7 @@ def board_id(uid: str, board_id: str):
         if offset < 0 or limit < 0: # offset 또는 limit이 없거나 음수임
             return {"message": "Invalid range"}, 404
         
-        result = board_get(uid, board_id, offset, limit)
+        result = board_get(board_id, offset, limit)
         if isinstance(result, ErrorObject):
             return result.get_response()
         
@@ -78,15 +79,14 @@ def board_id(uid: str, board_id: str):
         return {"message": "Invalid range"}, 404
 
 @app.route('/post/<post_id>', methods=['GET'])
-@get_uid
-def post_id(uid: str, post_id: str):
+def post_id(post_id: str):
     try:
         if not post_id.isnumeric(): # 숫자가 아닌 post_id
             return {"message": "Post does not exist"}, 404
         
         post_id = int(post_id)
         
-        result = post_get(uid, post_id)
+        result = post_get(post_id)
         if isinstance(result, ErrorObject):
             return result.get_response()
         
@@ -146,7 +146,6 @@ def comment_upload_(uid: str):
     
     if isinstance(result, ErrorObject):
         return result.get_response()
-    
     return {"id": result}, 200
 
 @app.route('/comment/delete', methods=['POST'])
@@ -179,13 +178,29 @@ def comment_like_(uid: str):
 
 @app.route('/chatbot/send', methods=['POST'])
 @get_uid
-def chatbot_send(uid: str):
-    pass
+def chatbot_send_(uid: str):
+    message = request.args.get('message', type=str)
+    image = request.args.get('image', type=str) #image temporary
+    
+    result = chatbot_send(uid, message, image)
+    
+    if isinstance(result, ErrorObject):
+        return result.get_response()
+    
+    return result, 200
 
 @app.route('/chatbot/log', methods=['GET'])
 @get_uid
-def chatbot_log(uid: str):
-    pass
+def chatbot_log_(uid: str):
+    try:
+        result = chatbot_log(uid)
+        if isinstance(result, ErrorObject):
+            return result.get_response()
+        return result, 200
+    except:
+        return {"message": "failed to get chatbot log"}, 500
+        
+        
 
 if __name__=="__main__":
     app.run(host="0.0.0.0", debug=True)
