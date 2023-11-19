@@ -2,12 +2,15 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.exc import SQLAlchemyError
 
-from config import config
+import os
+
 from util.models import *
 
 from typing import List
 
-engine = create_engine('') # TODO: Add database URL
+DB_URL = f"mysql+mysqlconnector://{os.environ.get('USER')}:{os.environ.get('PASSWORD')}@{os.environ.get('HOST')}:{os.environ.get('PORT')}/{os.environ.get('DATABASE')}?charset=utf8mb4&collation=utf8mb4_general_ci"
+
+engine = create_engine(DB_URL) # TODO: Add database URL
 Session = sessionmaker(bind=engine)
 
 def _execute_sql(sql: str) -> dict | SQLAlchemyError:
