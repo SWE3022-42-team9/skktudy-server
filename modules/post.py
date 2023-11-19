@@ -25,7 +25,7 @@ def post_get(uid: str, board_id: int, post_id: int) -> dict | ErrorObject:
         
     # post_id가 존재한다면
         # return DB에서 post_id로 지정된 post의 정보
-    post = db.get_post(post_id)
+    post = db.get_post_comments(post_id)
     if isinstance(post, db.SQLAlchemyError):
         return ErrorObject(503, "DB Error: " + post._message())
     
