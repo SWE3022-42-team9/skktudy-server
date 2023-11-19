@@ -16,14 +16,14 @@ def board_list(offset: int, limit: int) -> dict | ErrorObject:
     # DB에서 ID 역순으로 offset부터 limit개의 게시판 목록 반환
     board_list = db.get_board_list(offset, limit)
     if isinstance(board_list, db.SQLAlchemyError):
-        return ErrorObject(503, 'DB Error: ' + board_list._message())
+        return ErrorObject(500, 'DB Error: ' + str(board_list))
 
     # 게시판 목록이 비었다면
     if len(board_list) == 0:
         # 게시판 갯수 반환
         board_size = db.get_board_list_size()
         if isinstance(board_size, db.SQLAlchemyError):
-            return ErrorObject(503, 'DB Error: ' + board_size._message())
+            return ErrorObject(500, 'DB Error: ' + str(board_size))
         
         # offset이 게시판 갯수보다 크다면
         if offset >= board_size:
@@ -58,7 +58,7 @@ def board_get(board_id: int, offset: int, limit: int) -> dict | ErrorObject:
     # DB에서 board_id로 지정된 board의 metadata 반환
     metadata = db.get_board_metadata(board_id)
     if isinstance(metadata, db.SQLAlchemyError):
-        return ErrorObject(503, 'DB Error:' + metadata._message())
+        return ErrorObject(500, 'DB Error:' + str(metadata))
     
     # 결과가 없다면
     if metadata == None:
@@ -68,14 +68,14 @@ def board_get(board_id: int, offset: int, limit: int) -> dict | ErrorObject:
     # DB에서 board_id로 지정된 board의 post 중 ID 역순으로 offset부터 limit개의 게시글 목록 반환
     posts = db.get_board_posts(board_id, offset, limit)
     if isinstance(posts, db.SQLAlchemyError):
-        return ErrorObject(503, 'DB Error:' + posts._message())
+        return ErrorObject(500, 'DB Error:' + str(posts))
     
     # 게시글 목록이 없다면
     if len(posts) == 0:
         # 게시글 갯수 반환
         posts_count = db.get_board_posts_count(board_id)
         if isinstance(posts_count, db.SQLAlchemyError):
-            return ErrorObject(503, 'DB Error:' + posts_count._message())
+            return ErrorObject(500, 'DB Error:' + str(posts_count))
         
         # offset이 게시글 갯수보다 크다면
         if offset >= posts_count:
