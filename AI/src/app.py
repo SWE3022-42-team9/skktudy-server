@@ -4,7 +4,7 @@ from typing import List
 
 from flask import Flask, request
 
-from chatbot import Chatbot
+from AI.src.chatbot import Chatbot
 
 FILE_SAVE_PATH = str(Path(__file__).parent.parent) + "/data/"
 

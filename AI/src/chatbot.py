@@ -16,7 +16,7 @@ from langchain.text_splitter import CharacterTextSplitter
 from langchain.tools import Tool
 from langchain.vectorstores import FAISS
 
-from templates import PREFIX, QA_TEMPLATE, SUFFIX
+from AI.src.templates import PREFIX, QA_TEMPLATE, SUFFIX
 
 load_dotenv()
 
