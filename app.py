@@ -1,3 +1,5 @@
+import sys
+
 from flask import Flask, render_template, request
 
 from modules.auth import authenticate
@@ -203,4 +205,9 @@ def chatbot_log_(uid: str):
         
 
 if __name__=="__main__":
-    app.run(host="0.0.0.0", debug=True)
+    if len(sys.argv) != 3:
+        print("Usage: python3 app.py <port> <debug>")
+        exit(1)
+    port = int(sys.argv[1])
+    debug = bool(sys.argv[2])
+    app.run(host="0.0.0.0", port=port, debug=debug)
