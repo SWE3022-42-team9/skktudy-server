@@ -150,7 +150,7 @@ def comment_like_(uid: str):
 
 @app.route('/chatbot/send', methods=['POST'])
 @get_uid
-def chatbot_send(uid: str):
+def chatbot_send_(uid: str):
     message = request.args.get('message', type=str)
     image = request.args.get('image', type=str) #image temporary
     
@@ -163,7 +163,7 @@ def chatbot_send(uid: str):
 
 @app.route('/chatbot/log', methods=['GET'])
 @get_uid
-def chatbot_log(uid: str):
+def chatbot_log_(uid: str):
     try:
         result = chatbot_log(uid)
         if isinstance(result, ErrorObject):
