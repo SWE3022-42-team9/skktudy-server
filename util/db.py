@@ -184,6 +184,39 @@ def get_board_posts_count(board_id: int) -> int | SQLAlchemyError:
     
     return res
 
+def get_uid_from_token(token: str) -> str | SQLAlchemyError | None:
+    res: str | SQLAlchemyError
+    
+    with Session() as session:
+        try:
+            user = session.query(User) \
+                    .filter(User.token == token) \
+                    .first() \
+            
+            if user is None:
+                return None
+            
+            res = user.id
+        except SQLAlchemyError as e:
+            session.rollback()
+            res = e
+    
+    return res
+
+def is_user_exist(uid: str) -> bool | SQLAlchemyError:
+    res: bool | SQLAlchemyError
+    
+    with Session() as session:
+        try:
+            res = session.query(User) \
+                    .filter(User.id == uid) \
+                    .first() is not None
+        except SQLAlchemyError as e:
+            session.rollback()
+            res = e
+
+    return res
+
 # board_id에 해당하는 board가 존재하는지 확인
 def is_board_exist(board_id: int) -> bool | SQLAlchemyError:
     res: bool | SQLAlchemyError
@@ -196,5 +229,35 @@ def is_board_exist(board_id: int) -> bool | SQLAlchemyError:
         except SQLAlchemyError as e:
             session.rollback()
             res = e
+            
+    return res
 
+def add_user(uid: str, name: str, token: str) -> bool | SQLAlchemyError:
+    res: bool | SQLAlchemyError = False
+    
+    with Session() as session:
+        try:
+            session.add(User(id=uid, token=token, name=name))
+            session.commit()
+            res = True
+        except SQLAlchemyError as e:
+            session.rollback()
+            res = e
+    
+    return res
+
+def update_user(uid: str, name: str, token: str) -> bool | SQLAlchemyError:
+    res: bool | SQLAlchemyError = False
+    
+    with Session() as session:
+        try:
+            session.query(User) \
+                    .filter(User.id == uid) \
+                    .update({"token": token, "name": name})
+            session.commit()
+            res = True
+        except SQLAlchemyError as e:
+            session.rollback()
+            res = e
+    
     return res
