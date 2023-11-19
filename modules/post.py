@@ -83,7 +83,7 @@ def post_upload(uid: str, title: str, content: str, board_id: int, image: str | 
         result = db._execute_sql(upload_post_sql)
         return result.lastrowid
     
-    except SQLAlchemyError as e:
+    except db.SQLAlchemyError as e:
         return ErrorObject(500, str(e))
 
 # /post/like
