@@ -86,7 +86,7 @@ def post_id(post_id: str):
         
         post_id = int(post_id)
         
-        result = post_get(uid, post_id)
+        result = post_get(post_id)
         if isinstance(result, ErrorObject):
             return result.get_response()
         
