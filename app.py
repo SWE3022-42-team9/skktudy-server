@@ -71,7 +71,7 @@ def board_id(uid: str, board_id: str):
 @get_uid
 def post_id(uid: str, post_id: str):
     try:
-        if not post_id.isnumeric():
+        if not post_id.isnumeric(): # 숫자가 아닌 post_id
             return {"message": "Post does not exist"}, 404
         
         post_id = int(post_id)
@@ -105,41 +105,48 @@ def post_like_(uid: str):
 
 @app.route('/comment/upload', methods=['POST'])
 @get_uid
-def comment_upload(uid: str):
-    post_id = request.args.get('post_id', type=int) # request에서 post_id를 포함시키는 게 가능한지?
-    content = request.args.get('content', type=str)
+def comment_upload_(uid: str):
+    content = request.args.get('content', '', type=str)
+    post_id = request.args.get('post_id', type=int)
+    
+    if post_id is None: # post_id가 없음
+        return {"message": "No post specified"}, 404
+    if len(content) == 0: # content가 없음
+        return {"message": "Empty comment"}, 404
     
     result = comment_upload(uid, content, post_id)
     
     if isinstance(result, ErrorObject):
         return result.get_response()
-    
-    return {"id", result}, 200
+    return {"id": result}, 200
 
 @app.route('/comment/delete', methods=['POST'])
 @get_uid
-def comment_delete(uid: str):
+def comment_delete_(uid: str):
     comment_id = request.args.get('id', type=int)
     
-    result = comment_delete(uid, comment_id)
+    if comment_id is None: # comment_id가 없음
+        return {"message": "No comment specified"}, 404
     
+    result = comment_delete(uid, comment_id)
     if isinstance(result, ErrorObject):
         return result.get_response()
     
-    return {"id", result}, 200
-
+    return {}, 200
 
 @app.route('/comment/like', methods=['POST'])
 @get_uid
-def comment_like(uid: str):
+def comment_like_(uid: str):
     comment_id = request.args.get('id', type=int)
     
-    result = comment_like(uid, comment_id)
+    if comment_id is None: # comment_id가 없음
+        return {"message": "No comment specified"}, 404
     
+    result = comment_like(uid, comment_id)
     if isinstance(result, ErrorObject):
         return result.get_response()
     
-    return {"id", result}, 200
+    return {}, 200
 
 @app.route('/chatbot/send', methods=['POST'])
 @get_uid
