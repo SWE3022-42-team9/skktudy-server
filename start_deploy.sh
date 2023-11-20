@@ -1,3 +1,3 @@
 #!/usr/bin
 
-python3 app.py {1} False
+python3 app.py "$1" False
