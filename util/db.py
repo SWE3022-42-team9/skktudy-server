@@ -90,7 +90,7 @@ def get_post_comments(post_id: int) -> dict | SQLAlchemyError:
             res["comments"] = session.query(Comment, User.name.label('user')) \
                     .outerjoin(User, Comment.user_id == User.id) \
                     .filter(Comment.post_id == post_id) \
-                    .order_by(Comment.id.desc()) \
+                    .order_by(Comment.id.asc()) \
                     .all()
         except SQLAlchemyError as e:
             session.rollback()
