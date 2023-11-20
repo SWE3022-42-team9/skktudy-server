@@ -17,7 +17,10 @@ def get_uid(func):
             return {"message": "No authorization token"}, 401
         
         try:
-            token = token.split(' ')[1]
+            token = token.split(' ')
+            assert len(token) == 2
+            assert token[0] == "Bearer"
+            token = token[1]
         except: # Token 형태 이상
             return {"message": "Invalid token format"}, 401
         
