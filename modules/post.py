@@ -42,6 +42,11 @@ def post_get(post_id: int) -> dict | ErrorObject:
         "comments": []
     }
     
+    like = db.get_post_like_count(post_id)
+    if isinstance(like, db.SQLAlchemyError):
+        return ErrorObject(500, "DB Error: " + str(like))
+    result["likes"] = like
+    
     for comment in post["comments"]:
         comment = comment.tuple()
         result["comments"].append({
@@ -52,7 +57,15 @@ def post_get(post_id: int) -> dict | ErrorObject:
             "user": comment[1]
         })
     
-    return jsonify(post)
+    comment_ids = [comment["comment_id"] for comment in result["comments"]]
+    comment_like = db.get_comment_like_counts(comment_ids)
+    if isinstance(comment_like, db.SQLAlchemyError):
+        return ErrorObject(500, "DB Error: " + str(comment_like))
+    
+    for i in range(len(result["comments"])):
+        result["comments"][i]["like"] = comment_like[i]
+    
+    return jsonify(result)
 
 # /post/upload
 def post_upload(uid: str, title: str, content: str, board_id: int, image: str | None) -> int | ErrorObject:
