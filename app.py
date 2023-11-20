@@ -117,7 +117,7 @@ def post_upload_(uid: str):
     if isinstance(result, ErrorObject):
         return result.get_response()
     
-    return {"id": result}, 200
+    return {"post_id": result}, 200
 
 @app.route('/post/like', methods=['POST'])
 @get_uid
@@ -148,7 +148,7 @@ def comment_upload_(uid: str):
     
     if isinstance(result, ErrorObject):
         return result.get_response()
-    return {"id": result}, 200
+    return {"comment_id": result}, 200
 
 @app.route('/comment/delete', methods=['POST'])
 @get_uid
