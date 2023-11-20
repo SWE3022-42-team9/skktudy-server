@@ -17,7 +17,10 @@ def get_uid(func):
             return {"message": "No authorization token"}, 401
         
         try:
-            token = token.split(' ')[1]
+            token = token.split(' ')
+            assert len(token) == 2
+            assert token[0] == "Bearer"
+            token = token[1]
         except: # Token 형태 이상
             return {"message": "Invalid token format"}, 401
         
@@ -117,7 +120,7 @@ def post_upload_(uid: str):
     if isinstance(result, ErrorObject):
         return result.get_response()
     
-    return {"id": result}, 200
+    return {"post_id": result}, 200
 
 @app.route('/post/like', methods=['POST'])
 @get_uid
@@ -148,7 +151,7 @@ def comment_upload_(uid: str):
     
     if isinstance(result, ErrorObject):
         return result.get_response()
-    return {"id": result}, 200
+    return {"comment_id": result}, 200
 
 @app.route('/comment/delete', methods=['POST'])
 @get_uid

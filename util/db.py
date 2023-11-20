@@ -1,5 +1,5 @@
 
-from sqlalchemy import create_engine, text, Row
+from sqlalchemy import create_engine, text, Row, func
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.exc import SQLAlchemyError
 
@@ -114,6 +114,38 @@ def get_post_like(post_id: int, uid: str) -> bool | SQLAlchemyError:
             
     return res
 
+def get_post_like_count(post_id: int) -> int | SQLAlchemyError:
+    res: int | SQLAlchemyError
+    
+    with Session() as session:
+        try:
+            res = session.query(PostLike) \
+                    .filter(PostLike.post_id == post_id) \
+                    .count()
+        except SQLAlchemyError as e:
+            session.rollback()
+            res = e
+            
+    return res
+
+# post_ids로 주어진 post의 좋아요 갯수를 각각 반환, post_id 역순으로 정렬
+def get_post_like_counts(post_ids: List[int]) -> List[int] | SQLAlchemyError:
+    res: List[int] | SQLAlchemyError
+    
+    with Session() as session:
+        try:
+            res = session.query(PostLike) \
+                    .filter(PostLike.post_id.in_(post_ids)) \
+                    .group_by(PostLike.post_id) \
+                    .with_entities(PostLike.post_id, func.count(PostLike.post_id)) \
+                    .order_by(PostLike.post_id.desc()) \
+                    .all()
+        except SQLAlchemyError as e:
+            session.rollback()
+            res = e
+            
+    return res
+
 # post_id에 해당하는 post에 uid가 좋아요를 누름
 def add_post_like(post_id: int, uid: str) -> bool | SQLAlchemyError:
     res: bool | SQLAlchemyError = False
@@ -127,6 +159,38 @@ def add_post_like(post_id: int, uid: str) -> bool | SQLAlchemyError:
             session.rollback()
             res = e
     
+    return res
+
+def get_comment_like_count(comment_id: int) -> int | SQLAlchemyError:
+    res: int | SQLAlchemyError
+    
+    with Session() as session:
+        try:
+            res = session.query(CommentLike) \
+                    .filter(CommentLike.comment_id == comment_id) \
+                    .count()
+        except SQLAlchemyError as e:
+            session.rollback()
+            res = e
+            
+    return res
+
+# comment_ids로 주어진 comment의 좋아요 갯수를 각각 반환, comment_id 역순으로 정렬
+def get_comment_like_counts(comment_ids: List[int]) -> List[int] | SQLAlchemyError:
+    res: List[int] | SQLAlchemyError
+    
+    with Session() as session:
+        try:
+            res = session.query(CommentLike) \
+                    .filter(CommentLike.comment_id.in_(comment_ids)) \
+                    .group_by(CommentLike.comment_id) \
+                    .with_entities(CommentLike.comment_id, func.count(CommentLike.comment_id)) \
+                    .order_by(CommentLike.comment_id.desc()) \
+                    .all()
+        except SQLAlchemyError as e:
+            session.rollback()
+            res = e
+            
     return res
  
 def get_board_metadata(board_id: int) -> Board | SQLAlchemyError | None:
