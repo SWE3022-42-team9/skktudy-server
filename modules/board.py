@@ -103,6 +103,14 @@ def board_get(board_id: int, offset: int, limit: int) -> dict | ErrorObject:
             'board_id': post[0].board_id,
             'user': post[1]
         })
+    
+    post_ids = [post['post_id'] for post in post_data]
+    post_likes = db.get_post_like_counts(post_ids)
+    if isinstance(post_likes, db.SQLAlchemyError):
+        return ErrorObject(500, 'DB Error:' + str(post_likes))
+    
+    for i in range(len(post_data)):
+        post_data[i]['likes'] = post_likes[i]
 
     # return 게시판 정보 및 게시글 목록
-    return jsonify(metadata=data, posts=posts)
+    return jsonify(metadata=data, posts=post_data)
