@@ -78,7 +78,7 @@ def board_get(board_id: int, offset: int, limit: int) -> dict | ErrorObject:
             return ErrorObject(500, 'DB Error:' + str(posts_count))
         
         # offset이 게시글 갯수보다 크다면
-        if offset >= posts_count:
+        if offset >= posts_count and posts_count != 0:
             # return ErrorObject(404)
             return ErrorObject(404, 'Out of range')
     
