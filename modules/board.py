@@ -99,7 +99,7 @@ def board_get(board_id: int, offset: int, limit: int) -> dict | ErrorObject:
             'title': post[0].title,
             'content': post[0].content,
             'image': post[0].image,
-            'date': post[0].date.strftime('%Y-%m-%dT%H:%M:%S'),
+            'date': post[0].date.strftime('%Y-%m-%dT%H:%M:%SZ'),
             'board_id': post[0].board_id,
             'user': post[1]
         })
