@@ -36,7 +36,7 @@ def post_get(post_id: int) -> dict | ErrorObject:
         "title": post_data[0].title,
         "content": post_data[0].content,
         "image": post_data[0].image,
-        "date": post_data[0].date,
+        "date": post_data[0].date.strftime('%Y-%m-%dT%H:%M:%S'),
         "board_id": post_data[0].board_id,
         "user": post_data[1],
         "comments": []
@@ -52,7 +52,7 @@ def post_get(post_id: int) -> dict | ErrorObject:
         result["comments"].append({
             "comment_id": comment[0].id,
             "content": comment[0].content,
-            "date": comment[0].date,
+            "date": comment[0].date.strftime('%Y-%m-%dT%H:%M:%S'),
             "post_id": comment[0].post_id,
             "user": comment[1]
         })
