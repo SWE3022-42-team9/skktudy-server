@@ -92,7 +92,7 @@ def board_get(board_id: int, offset: int, limit: int) -> dict | ErrorObject:
     }
     
     post_data = []
-    for post in post_data:
+    for post in posts:
         post = post.tuple()
         post_data.append({
             'post_id': post[0].id,
