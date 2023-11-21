@@ -63,7 +63,13 @@ def post_get(post_id: int) -> dict | ErrorObject:
         return ErrorObject(500, "DB Error: " + str(comment_like))
     
     for i in range(len(result["comments"])):
-        result["comments"][i]["like"] = comment_like[i]
+        result["comments"][i]["likes"] = 0
+    
+    for i in range(len(comment_like)):
+        like = comment_like[i]
+        for j in range(len(result["comments"])):
+            if result["comments"][j]["comment_id"] == like[0]:
+                result["comments"][j]["likes"] = like[1]
     
     return jsonify(result)
 

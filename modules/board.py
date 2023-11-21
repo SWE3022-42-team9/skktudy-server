@@ -110,7 +110,13 @@ def board_get(board_id: int, offset: int, limit: int) -> dict | ErrorObject:
         return ErrorObject(500, 'DB Error:' + str(post_likes))
     
     for i in range(len(post_data)):
-        post_data[i]['likes'] = post_likes[i]
+        post_data[i]['likes'] = 0
+    
+    for i in range(len(post_likes)):
+        like = post_likes[i]
+        for j in range(len(post_data)):
+            if post_data[j]['post_id'] == like[0]:
+                post_data[j]['likes'] = like[1]
 
     # return 게시판 정보 및 게시글 목록
     return jsonify(metadata=data, posts=post_data)
