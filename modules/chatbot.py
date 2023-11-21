@@ -31,7 +31,7 @@ def chatbot_log(uid: str) -> dict | ErrorObject:
     #   dict | ErrorObject: log | ErrorObject
 
     # check current memory usage by psutil
-    memory_usage = psutil.virtual.memory().percent
+    memory_usage = psutil.virtual_memory().percent
     if memory_usage > 90:
         return ErrorObject(500, "Memory exceeded, cannot create new chatbot instances")
 
