@@ -16,36 +16,31 @@ def authenticate(token: str) -> str | ErrorObject:
     # returns:
     #   str | ErrorObject: uid | ErrorObject
     # --------------------------------------------------
-    # DB에서 token에 대한 uid 반환
-    uid = db.get_uid_from_token(token)
-    if isinstance(uid, db.SQLAlchemyError):
-        return ErrorObject(500, "DB Error: " + str(uid))
+    # _renew() 호출해서 uid 및 name 반환
+    decoded_data = _renew(token)
     
-    # DB에 token이 없다면
-    if uid is None:
-        # _renew() 호출해서 uid 반환
-        decoded_token = _renew(token)
-        
-        # uid가 ErrorObject라면
-        if isinstance(decoded_token, ErrorObject):
-            # return ErrorObject
-            return decoded_token
-        
-        exists = db.is_user_exist(decoded_token['uid'])
-        if isinstance(exists, db.SQLAlchemyError):
-            return ErrorObject(500, "DB Error: " + str(exists))
-        
-        # uid가 DB에 없다면
-        if not exists:
-            # DB에 uid 및 token 정보로 데이터 생성
-            result = db.add_user(decoded_token['uid'], decoded_token['name'], token)
-            if isinstance(result, db.SQLAlchemyError):
-                return ErrorObject(500, "DB Error: " + str(result))
-        else:
-            # DB에 uid 및 token 정보로 데이터 갱신
-            result = db.update_user(decoded_token['uid'], decoded_token['name'], token)
-            if isinstance(result, db.SQLAlchemyError):
-                return ErrorObject(500, "DB Error: " + str(result))
+    # uid가 ErrorObject라면
+    if isinstance(decoded_data, ErrorObject):
+        # return ErrorObject
+        return decoded_data
+    
+    uid, name = decoded_data
+    
+    exists = db.is_user_exist(uid)
+    if isinstance(exists, db.SQLAlchemyError):
+        return ErrorObject(500, "DB Error: " + str(exists))
+    
+    # uid가 DB에 없다면
+    if not exists:
+        # DB에 uid 및 token 정보로 데이터 생성
+        result = db.add_user(uid, name, '')
+        if isinstance(result, db.SQLAlchemyError):
+            return ErrorObject(500, "DB Error: " + str(result))
+    else:
+        # DB에 uid 및 token 정보로 데이터 갱신
+        result = db.update_user(uid, name, '')
+        if isinstance(result, db.SQLAlchemyError):
+            return ErrorObject(500, "DB Error: " + str(result))
 
     # return uid
     return uid
@@ -62,7 +57,9 @@ def _renew(token: str) -> dict | ErrorObject:
     # Firebase에 token을 전송하여 uid값 반환
         decoded_token = auth.verify_id_token(token)
         
-        return decoded_token
+        user = auth.get_user(decoded_token['uid'])
+        
+        return decoded_token['uid'], user.display_name
     
     except Exception as e:
         return ErrorObject(500, "Firebase Error: " + str(e))
