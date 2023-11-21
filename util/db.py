@@ -7,7 +7,7 @@ import os
 
 from util.models import *
 
-from typing import List
+from typing import List, Tuple
 
 DB_URL = f"mysql+mysqlconnector://{os.environ.get('USER')}:{os.environ.get('PASSWORD')}@{os.environ.get('HOST')}:{os.environ.get('PORT')}/{os.environ.get('DATABASE')}?charset=utf8mb4&collation=utf8mb4_general_ci"
 
@@ -223,7 +223,7 @@ def get_board_list_size() -> int | SQLAlchemyError:
     return count
 
 # board_id로 지정된 board의 metadata와 offset과 limit으로 지정된 범위의 게시글 목록과 작성자 이름을 반환합니다
-def get_board_posts(board_id: int, offset: int, limit: int) -> List[Row[Post, User.name]] | SQLAlchemyError:
+def get_board_posts(board_id: int, offset: int, limit: int) -> List[Row[Tuple[Post, str]]] | SQLAlchemyError:
     # get_board_metadata 호출 후 사용하기 때문에 board_id로 지정된 board가 존재한다고 가정합니다
     res: List[Row[Post, User.name]] | SQLAlchemyError
     
