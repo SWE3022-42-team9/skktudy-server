@@ -58,7 +58,8 @@ def board():
             return result.get_response()
         
         return result, 200
-    except: # offset 또는 limit이 숫자가 아님
+    except Exception as e: # offset 또는 limit이 숫자가 아님
+        sys.stderr.write(str(e) + '\n')
         return {"message": "Invalid range"}, 404
 
 @app.route('/board/<board_id>', methods=['GET'])
@@ -80,7 +81,8 @@ def board_id(board_id: str):
             return result.get_response()
         
         return result, 200
-    except: # offset 또는 limit이 숫자가 아님
+    except Exception as e: # offset 또는 limit이 숫자가 아님
+        sys.stderr.write(str(e) + '\n')
         return {"message": "Invalid range"}, 404
 
 @app.route('/post/<post_id>', methods=['GET'])
@@ -96,7 +98,8 @@ def post_id(post_id: str):
             return result.get_response()
         
         return result, 200
-    except:
+    except Exception as e:
+        sys.stderr.write(str(e) + '\n')
         return {"message": "Post does not exist"}, 404
 
 @app.route('/post/upload', methods=['POST'])
@@ -202,7 +205,8 @@ def chatbot_log_(uid: str):
         if isinstance(result, ErrorObject):
             return result.get_response()
         return result, 200
-    except:
+    except Exception as e:
+        sys.stderr.write(str(e) + '\n')
         return {"message": "failed to get chatbot log"}, 500
         
         
