@@ -1,4 +1,5 @@
 import sys
+import json
 
 from flask import Flask, render_template, request
 
@@ -102,16 +103,23 @@ def post_id(post_id: str):
 @app.route('/post/upload', methods=['POST'])
 @get_uid
 def post_upload_(uid: str):
-    title = request.args.get('title', '', type=str)
-    content = request.args.get('content', '', type=str)
-    board_id = request.args.get('board_id', type=int)
-    image = request.args.get('image', None, type=str)
+    args: dict = json.loads(request.data)
+    
+    title = args.get('title', '')
+    content = args.get('content', '')
+    board_id = args.get('board_id', None)
+    image = args.get('image', None)
     
     if board_id is None:
         return {"message": "No board specified"}, 404
     
     if len(title) == 0 or len(content) == 0:
         return {"message": "Empty content"}, 404
+    
+    try:
+        board_id = int(board_id)
+    except: # board_id가 숫자가 아님
+        return {"message": "Board does not exist"}, 404
     
     if image is not None and len(image) == 0:
         image = None
@@ -125,10 +133,17 @@ def post_upload_(uid: str):
 @app.route('/post/like', methods=['POST'])
 @get_uid
 def post_like_(uid: str):
-    post_id = request.args.get('post_id', type=int)
+    args: dict = json.loads(request.data)
+    
+    post_id = args.get('post_id', None)
     
     if post_id is None: # post_id가 없음
         return {"message": "No post specified"}, 404
+    
+    try:
+        post_id = int(post_id)
+    except: # post_id가 숫자가 아님
+        return {"message": "Post does not exist"}, 404
     
     result = post_like(uid, post_id)
     if isinstance(result, ErrorObject):
@@ -139,13 +154,20 @@ def post_like_(uid: str):
 @app.route('/comment/upload', methods=['POST'])
 @get_uid
 def comment_upload_(uid: str):
-    content = request.args.get('content', '', type=str)
-    post_id = request.args.get('post_id', type=int)
+    args: dict = json.loads(request.data)
+    
+    content = args.get('content', '')
+    post_id = args.get('post_id', None)
     
     if post_id is None: # post_id가 없음
         return {"message": "No post specified"}, 404
     if len(content) == 0: # content가 없음
         return {"message": "Empty comment"}, 404
+    
+    try:
+        post_id = int(post_id)
+    except:
+        return {"message": "Post does not exist"}, 404
     
     result = comment_upload(uid, content, post_id)
     
@@ -156,10 +178,17 @@ def comment_upload_(uid: str):
 @app.route('/comment/delete', methods=['POST'])
 @get_uid
 def comment_delete_(uid: str):
-    comment_id = request.args.get('comment_id', type=int)
+    args: dict = json.loads(request.data)
+    
+    comment_id = args.get('comment_id', None)
     
     if comment_id is None: # comment_id가 없음
         return {"message": "No comment specified"}, 404
+    
+    try:
+        comment_id = int(comment_id)
+    except: # comment_id가 숫자가 아님
+        return {"message": "Comment does not exist"}, 404
     
     result = comment_delete(uid, comment_id)
     if isinstance(result, ErrorObject):
@@ -170,10 +199,17 @@ def comment_delete_(uid: str):
 @app.route('/comment/like', methods=['POST'])
 @get_uid
 def comment_like_(uid: str):
-    comment_id = request.args.get('comment_id', type=int)
+    args: dict = json.loads(request.data)
+    
+    comment_id = args.get('comment_id', None)
     
     if comment_id is None: # comment_id가 없음
         return {"message": "No comment specified"}, 404
+    
+    try:
+        comment_id = int(comment_id)
+    except: # comment_id가 숫자가 아님
+        return {"message": "Comment does not exist"}, 404
     
     result = comment_like(uid, comment_id)
     if isinstance(result, ErrorObject):
@@ -184,8 +220,10 @@ def comment_like_(uid: str):
 @app.route('/chatbot/send', methods=['POST'])
 @get_uid
 def chatbot_send_(uid: str):
-    message = request.args.get('message', type=str)
-    image = request.args.get('image', type=str) #image temporary
+    args: dict = json.loads(request.data)
+    
+    message = args.get('message', '')
+    image = args.get('image', None) #image temporary
     
     result = chatbot_send(uid, message, image)
     
