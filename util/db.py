@@ -129,8 +129,8 @@ def get_post_like_count(post_id: int) -> int | SQLAlchemyError:
     return res
 
 # post_ids로 주어진 post의 좋아요 갯수를 각각 반환, post_id 역순으로 정렬
-def get_post_like_counts(post_ids: List[int]) -> List[int] | SQLAlchemyError:
-    res: List[int] | SQLAlchemyError
+def get_post_like_counts(post_ids: List[int]) -> List[Row[Tuple[int, int]]] | SQLAlchemyError:
+    res: List[Row[Tuple[int, int]]] | SQLAlchemyError
     
     with Session() as session:
         try:
@@ -176,8 +176,8 @@ def get_comment_like_count(comment_id: int) -> int | SQLAlchemyError:
     return res
 
 # comment_ids로 주어진 comment의 좋아요 갯수를 각각 반환, comment_id 역순으로 정렬
-def get_comment_like_counts(comment_ids: List[int]) -> List[int] | SQLAlchemyError:
-    res: List[int] | SQLAlchemyError
+def get_comment_like_counts(comment_ids: List[int]) -> List[Row[Tuple[int, int]]] | SQLAlchemyError:
+    res: List[Row[Tuple[int, int]]] | SQLAlchemyError
     
     with Session() as session:
         try:
@@ -225,7 +225,7 @@ def get_board_list_size() -> int | SQLAlchemyError:
 # board_id로 지정된 board의 metadata와 offset과 limit으로 지정된 범위의 게시글 목록과 작성자 이름을 반환합니다
 def get_board_posts(board_id: int, offset: int, limit: int) -> List[Row[Tuple[Post, str]]] | SQLAlchemyError:
     # get_board_metadata 호출 후 사용하기 때문에 board_id로 지정된 board가 존재한다고 가정합니다
-    res: List[Row[Post, User.name]] | SQLAlchemyError
+    res: List[Row[Post, str]] | SQLAlchemyError
     
     with Session() as session:
         try:
