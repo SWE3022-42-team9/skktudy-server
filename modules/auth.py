@@ -26,6 +26,9 @@ def authenticate(token: str) -> str | ErrorObject:
     
     uid, name = decoded_data
     
+    if name is None:
+        name = 'Anonymous ' + uid[:4]
+    
     exists = db.is_user_exist(uid)
     if isinstance(exists, db.SQLAlchemyError):
         return ErrorObject(500, "DB Error: " + str(exists))
