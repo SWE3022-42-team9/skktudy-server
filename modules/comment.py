@@ -116,41 +116,52 @@ def comment_like(uid: str, comment_id: int) -> int | ErrorObject:
     
     # --------------------------------------------------
     # comment_id가 존재하는지 확인
+    exist = db.is_comment_exist(comment_id)
+    if isinstance(exist, db.SQLAlchemyError):
+        return ErrorObject(500, "DB Error: " + str(exist))
     
     # comment_id가 존재하지 않는다면
+    if not exist:
         # return ErrorObject(404)
+        return ErrorObject(404, "Comment does not exist")
     
     # DB에서 comment_id, user_id를 통해 좋아요 내역 확인
+    exist2 = db.get_comment_like(uid, comment_id)
     
     # 좋아요 내역이 없다면
+    if not exist2:
         # DB에 좋아요 내역 추가
+        db.add_comment_like(uid, comment_id)
         # return comment_id
+        return comment_id
+    
+    return ErrorObject(403, "Like duplicated")
     
     # 좋아요 내역이 있다면
         # return ErrorObject(403)
 
 
     # 해당하는 comment_id가 있는지 체크
-    comment_exist_chk_sql = f"SELECT 1 FROM comment WHERE id = {comment_id}"
+    # comment_exist_chk_sql = f"SELECT 1 FROM comment WHERE id = {comment_id}"
     
-    try:
-        comment_exists = db._execute_sql(comment_exist_chk_sql)
+    # try:
+    #     comment_exists = db._execute_sql(comment_exist_chk_sql)
         
-        if not comment_exists:
-            return ErrorObject(404, "Comment does not exist") #ID로 지정된 댓글이 존재하지 않음
+    #     if not comment_exists:
+    #         return ErrorObject(404, "Comment does not exist") #ID로 지정된 댓글이 존재하지 않음
         
-    except SQLAlchemyError as e:
-        return ErrorObject(500, str(e))
+    # except SQLAlchemyError as e:
+    #     return ErrorObject(500, str(e))
     
-    add_like_sql = f"INSERT INTO comment_like (comment_id, user_id) VALUES ({comment_id}, {uid})"
+    # add_like_sql = f"INSERT INTO comment_like (comment_id, user_id) VALUES ({comment_id}, {uid})"
     
-    try:
-        comment_add = db._execute_sql(add_like_sql)
-        return comment_id # 성공시 comment_id 반환
+    # try:
+    #     comment_add = db._execute_sql(add_like_sql)
+    #     return comment_id # 성공시 comment_id 반환
     
-    except IntegrityError: # Composite key 조건 위배(like duplication)
-        return ErrorObject(403, "Like duplicated") # 이미 좋아요를 누른 댓글에 중복으로 좋아요를 시도
+    # except IntegrityError: # Composite key 조건 위배(like duplication)
+    #     return ErrorObject(403, "Like duplicated") # 이미 좋아요를 누른 댓글에 중복으로 좋아요를 시도
     
-    except SQLAlchemyError as e:
-        return ErrorObject(500, str(e))
+    # except SQLAlchemyError as e:
+    #     return ErrorObject(500, str(e))
    
