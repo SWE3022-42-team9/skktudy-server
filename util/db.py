@@ -179,6 +179,23 @@ def add_post_like(post_id: int, uid: str) -> bool | SQLAlchemyError:
     
     return res
 
+def upload_comment(uid: str, post_id: int, content: str) -> int | SQLAlchemyError:
+    res: int | SQLAlchemyError
+    
+    with Session() as session:
+        try:
+            session.add(Comment(post_id=post_id, content=content, user_id=uid, date=func.now()))
+            session.commit()
+            res = session.query(Comment) \
+                    .order_by(Comment.id.desc()) \
+                    .first() \
+                    .id
+        except SQLAlchemyError as e:
+            session.rollback()
+            res = e
+    
+    return res
+
 def get_comment_like_count(comment_id: int) -> int | SQLAlchemyError:
     res: int | SQLAlchemyError
     
