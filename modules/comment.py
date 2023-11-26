@@ -13,29 +13,39 @@ def comment_upload(uid: str, comment: str, post_id: int) -> int | ErrorObject:
     #   int | ErrorObject: comment_id | ErrorObject
     # --------------------------------------------------
     # DB에 post_id가 존재하는지 확인
+    exists = db.is_post_exist(post_id)
+    if isinstance(exists, db.SQLAlchemyError):
+        return ErrorObject(500, "DB Error: " + str(exists))
     
     # post_id가 존재하지 않는다면
+    if not exists:
         # return ErrorObject(404)
+        return ErrorObject(404, "Post does not exist")
     
     # post_id가 존재한다면
+    comment_id = db.upload_comment(uid, comment, post_id)
+    if isinstance(comment_id, db.SQLAlchemyError):
+        return ErrorObject(500, "DB Error: " + str(comment_id))
+    
+    return comment_id
         # DB에 comment, user_id, post_id+α를 저장
         # return comment_id
         
         
-    check_post_sql = f"SELECT 1 FROM post WHERE id = {post_id}"
+    # check_post_sql = f"SELECT 1 FROM post WHERE id = {post_id}"
     
-    try:
-        post_exists = db._execute_sql(check_post_sql)
+    # try:
+    #     post_exists = db._execute_sql(check_post_sql)
         
-        if not post_exists:
-            return ErrorObject(404, "Post does not exist") #해당 댓글을 달기 위한 post가 주어지지 않음
+    #     if not post_exists:
+    #         return ErrorObject(404, "Post does not exist") #해당 댓글을 달기 위한 post가 주어지지 않음
         
-        upload_comment_sql = f"INSERT INTO comment (content, date, post_id, user_id) VALUES ({comment},  CURRENT_TIMESTAMP, {post_id}, {uid})"
-        result = db._execute_sql(upload_comment_sql)
-        return result.lastrowid
+    #     upload_comment_sql = f"INSERT INTO comment (content, date, post_id, user_id) VALUES ({comment},  CURRENT_TIMESTAMP, {post_id}, {uid})"
+    #     result = db._execute_sql(upload_comment_sql)
+    #     return result.lastrowid
     
-    except SQLAlchemyError as e:
-        return ErrorObject(500, str(e))
+    # except SQLAlchemyError as e:
+    #     return ErrorObject(500, str(e))
         
     
 
