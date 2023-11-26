@@ -196,6 +196,35 @@ def upload_comment(uid: str, post_id: int, content: str) -> int | SQLAlchemyErro
     
     return res
 
+def get_comment_like(comment_id: int, uid: str) -> bool | SQLAlchemyError:
+    res: bool | SQLAlchemyError
+    
+    with Session() as session:
+        try:
+            res = session.query(CommentLike) \
+                    .filter(CommentLike.comment_id == comment_id) \
+                    .filter(CommentLike.user_id == uid) \
+                    .first() is not None
+        except SQLAlchemyError as e:
+            session.rollback()
+            res = e
+            
+    return res
+
+def add_comment_like(comment_id: int, uid: str) -> bool | SQLAlchemyError:
+    res: bool | SQLAlchemyError = False
+    
+    with Session() as session:
+        try:
+            session.add(CommentLike(comment_id=comment_id, user_id=uid))
+            session.commit()
+            res = True
+        except SQLAlchemyError as e:
+            session.rollback()
+            res = e
+    
+    return res
+
 def delete_comment(comment_id: int, uid: str) -> bool | SQLAlchemyError:
     res: bool | SQLAlchemyError = False
     
