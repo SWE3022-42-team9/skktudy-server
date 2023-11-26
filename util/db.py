@@ -60,6 +60,24 @@ def get_board_list(offset: int, limit: int) -> List[Board] | SQLAlchemyError:
             res = e
     
     return res
+
+def upload_post(uid: str, title: str, content: str, board_id: int, image: str | None) -> int | SQLAlchemyError:
+    res: int | SQLAlchemyError
+    
+    with Session() as session:
+        try:
+            session.add(Post(title=title, content=content, image=image, board_id=board_id, user_id=uid, date=func.now()))
+            session.commit()
+            res = session.query(Post) \
+                    .order_by(Post.id.desc()) \
+                    .first() \
+                    .id
+        except SQLAlchemyError as e:
+            session.rollback()
+            res = e
+    
+    return res
+
 # post_id에 해당하는 post가 존재하는지 확인
 def is_post_exist(post_id: int) -> bool | SQLAlchemyError:
     res: bool | SQLAlchemyError
@@ -153,6 +171,69 @@ def add_post_like(post_id: int, uid: str) -> bool | SQLAlchemyError:
     with Session() as session:
         try:
             session.add(PostLike(post_id=post_id, user_id=uid))
+            session.commit()
+            res = True
+        except SQLAlchemyError as e:
+            session.rollback()
+            res = e
+    
+    return res
+
+def upload_comment(uid: str, post_id: int, content: str) -> int | SQLAlchemyError:
+    res: int | SQLAlchemyError
+    
+    with Session() as session:
+        try:
+            session.add(Comment(post_id=post_id, content=content, user_id=uid, date=func.now()))
+            session.commit()
+            res = session.query(Comment) \
+                    .order_by(Comment.id.desc()) \
+                    .first() \
+                    .id
+        except SQLAlchemyError as e:
+            session.rollback()
+            res = e
+    
+    return res
+
+def get_comment_like(comment_id: int, uid: str) -> bool | SQLAlchemyError:
+    res: bool | SQLAlchemyError
+    
+    with Session() as session:
+        try:
+            res = session.query(CommentLike) \
+                    .filter(CommentLike.comment_id == comment_id) \
+                    .filter(CommentLike.user_id == uid) \
+                    .first() is not None
+        except SQLAlchemyError as e:
+            session.rollback()
+            res = e
+            
+    return res
+
+def add_comment_like(comment_id: int, uid: str) -> bool | SQLAlchemyError:
+    res: bool | SQLAlchemyError = False
+    
+    with Session() as session:
+        try:
+            session.add(CommentLike(comment_id=comment_id, user_id=uid))
+            session.commit()
+            res = True
+        except SQLAlchemyError as e:
+            session.rollback()
+            res = e
+    
+    return res
+
+def delete_comment(comment_id: int, uid: str) -> bool | SQLAlchemyError:
+    res: bool | SQLAlchemyError = False
+    
+    with Session() as session:
+        try:
+            session.query(Comment) \
+                    .filter(Comment.id == comment_id) \
+                    .filter(Comment.user_id == uid) \
+                    .delete()
             session.commit()
             res = True
         except SQLAlchemyError as e:
