@@ -59,10 +59,21 @@ def comment_delete(uid: str, comment_id: int) -> int | ErrorObject:
     #   int | ErrorObject: comment_id | ErrorObject
     # --------------------------------------------------
     # DB에서 comment_id, user_id를 통해 comment 존재 확인
+    comment = db.get_comment(comment_id)
+    if isinstance(comment, db.SQLAlchemyError):
+        return ErrorObject(500, "DB Error: " + str(comment))
     
     # comment가 존재하지 않는다면
+    if not comment:
         # ErrorObject 반환(404)
-        
+        return ErrorObject(404, "Comment does not exist")
+    
+    if comment.user_id != uid:
+        return ErrorObject(403, "User is not the author")
+    
+    result = db.delete_comment(comment_id)
+    if isinstance(result, db.SQLAlchemyError):
+        return ErrorObject(500, "DB Error: " + str(result))
     # comment가 존재한다면
         # 작성자와 user_id가 같다면
             # DB에서 comment 삭제
@@ -70,27 +81,28 @@ def comment_delete(uid: str, comment_id: int) -> int | ErrorObject:
             
         # 작성자와 user_id가 다르다면
             # ErrorObject 반환(403)
-     
     
-    check_comment_sql = f"SELECT user_id FROM comment WHERE id = {comment_id}"
+    return comment_id
     
-    try:
-        comment = db._execute_sql(check_comment_sql)
+    # check_comment_sql = f"SELECT user_id FROM comment WHERE id = {comment_id}"
+    
+    # try:
+    #     comment = db._execute_sql(check_comment_sql)
 
-        if not comment:
-            return ErrorObject(404, "Comment does not exist") #ID로 지정된 댓글이 존재하지 않음
+    #     if not comment:
+    #         return ErrorObject(404, "Comment does not exist") #ID로 지정된 댓글이 존재하지 않음
 
-        else:
-            if comment['user_id'] == uid:
-                delete_comment_sql = f"DELETE FROM comment WHERE id = {comment_id}"
-                db._execute_sql(delete_comment_sql)
-                return comment_id
+    #     else:
+    #         if comment['user_id'] == uid:
+    #             delete_comment_sql = f"DELETE FROM comment WHERE id = {comment_id}"
+    #             db._execute_sql(delete_comment_sql)
+    #             return comment_id
             
-            else:
-                return ErrorObject(403, "User is not the author") #삭제를 요청한 유저와 댓글의 작성자가 다름
+    #         else:
+    #             return ErrorObject(403, "User is not the author") #삭제를 요청한 유저와 댓글의 작성자가 다름
     
-    except SQLAlchemyError as e:
-        return ErrorObject(500, str(e))
+    # except SQLAlchemyError as e:
+    #     return ErrorObject(500, str(e))
     
 
 # /comment/like
