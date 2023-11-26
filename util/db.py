@@ -196,6 +196,23 @@ def upload_comment(uid: str, post_id: int, content: str) -> int | SQLAlchemyErro
     
     return res
 
+def delete_comment(comment_id: int, uid: str) -> bool | SQLAlchemyError:
+    res: bool | SQLAlchemyError = False
+    
+    with Session() as session:
+        try:
+            session.query(Comment) \
+                    .filter(Comment.id == comment_id) \
+                    .filter(Comment.user_id == uid) \
+                    .delete()
+            session.commit()
+            res = True
+        except SQLAlchemyError as e:
+            session.rollback()
+            res = e
+    
+    return res
+
 def get_comment_like_count(comment_id: int) -> int | SQLAlchemyError:
     res: int | SQLAlchemyError
     
