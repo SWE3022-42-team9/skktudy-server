@@ -66,7 +66,7 @@ def post_get(post_id: int) -> dict | ErrorObject:
         result["comments"][i]["likes"] = 0
     
     for i in range(len(comment_like)):
-        like = comment_like[i]
+        like = comment_like[i].tuple()
         for j in range(len(result["comments"])):
             if result["comments"][j]["comment_id"] == like[0]:
                 result["comments"][j]["likes"] = like[1]

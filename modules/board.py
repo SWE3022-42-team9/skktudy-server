@@ -113,7 +113,7 @@ def board_get(board_id: int, offset: int, limit: int) -> dict | ErrorObject:
         post_data[i]['likes'] = 0
     
     for i in range(len(post_likes)):
-        like = post_likes[i]
+        like = post_likes[i].tuple()
         for j in range(len(post_data)):
             if post_data[j]['post_id'] == like[0]:
                 post_data[j]['likes'] = like[1]
