@@ -60,6 +60,24 @@ def get_board_list(offset: int, limit: int) -> List[Board] | SQLAlchemyError:
             res = e
     
     return res
+
+def upload_post(uid: str, title: str, content: str, board_id: int, image: str | None) -> int | SQLAlchemyError:
+    res: int | SQLAlchemyError
+    
+    with Session() as session:
+        try:
+            session.add(Post(title=title, content=content, image=image, board_id=board_id, user_id=uid, date=func.now()))
+            session.commit()
+            res = session.query(Post) \
+                    .order_by(Post.id.desc()) \
+                    .first() \
+                    .id
+        except SQLAlchemyError as e:
+            session.rollback()
+            res = e
+    
+    return res
+
 # post_id에 해당하는 post가 존재하는지 확인
 def is_post_exist(post_id: int) -> bool | SQLAlchemyError:
     res: bool | SQLAlchemyError
