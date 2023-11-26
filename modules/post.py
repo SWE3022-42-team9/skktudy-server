@@ -97,13 +97,21 @@ def post_upload(uid: str, title: str, content: str, board_id: int, image: str | 
     # board_id가 존재한다면
         # DB에 post, user_id, board_id+α를 저장
         # return post_id
-    try:
-        upload_post_sql = f"INSERT INTO post (title, content, image, date, board_id, user_id) VALUES ({title}, {content}, {image}, CURRENT_TIMESTAMP, {board_id}, {uid})"
-        result = db._execute_sql(upload_post_sql)
-        return result.lastrowid
     
-    except db.SQLAlchemyError as e:
-        return ErrorObject(500, str(e))
+    post_id = db.upload_post(uid, title, content, board_id, image)
+    if isinstance(post_id, db.SQLAlchemyError):
+        return ErrorObject(500, "DB Error: " + str(post_id))
+    
+    return post_id
+    
+    # try:
+    #     db.upload_post(uid, title, content, board_id, image)
+    #     upload_post_sql = f"INSERT INTO post (title, content, image, date, board_id, user_id) VALUES ({title}, {content}, {image}, CURRENT_TIMESTAMP, {board_id}, {uid})"
+    #     result = db._execute_sql(upload_post_sql)
+    #     return result.lastrowid
+    
+    # except db.SQLAlchemyError as e:
+    #     return ErrorObject(500, str(e))
 
 # /post/like
 def post_like(uid: str, post_id: int) -> int | ErrorObject:
