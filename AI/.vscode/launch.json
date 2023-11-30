@@ -1,0 +1,34 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Python: Current File",
+            "type": "python",
+            "request": "launch",
+            "program": "${file}",
+            "console": "integratedTerminal",
+            "justMyCode": true
+        },
+        {
+            "name": "Streamlit",
+            "type": "python",
+            "request": "launch",
+            "module": "streamlit",
+            "env": {
+                "STREAMLIT_APP": "app.py",
+                "STREAMLIT_ENV": "development",
+                "AWS_PROFILE": "mega_root",
+                "PYTHONPATH": "${workspaceRoot}/src",
+            },
+            "args": [
+                "run",
+                "/Users/sangyun/Documents/Coding_Workspace/skktudy/skktudy_chatbot/src/app.py"
+            ],
+            "jinja": true,
+            "justMyCode": false
+        }
+    ]
+}
