@@ -12,7 +12,7 @@ API는 [여기](https://skktudy.orbithv.dev/api)에 정리하고 있습니다.
 
 |분야|스택|
 |:-:|:-:|
-|**웹 서버**|Flask / Python<br>uwsgi|
+|**웹 서버**|Flask / Python|
 |**데이터베이스**|MariaDB<br>SQLAlchemy|
 |**HTTPS**|Let's Encrypt|
 |**프록시**|nginx|
