@@ -4,7 +4,7 @@ Skk:tudy 서버
 
 ## API 문서
 
-~~API는 [여기](https://skktudy.orbithv.dev/api)에 정리하고 있습니다.~~ 인스턴스 삭제로 인하여 리다이렉트 비활성화
+~~API는 [여기](https://skktudy.orbithv.dev/api)에 정리하고 있습니다.~~ *인스턴스 삭제로 인하여 리다이렉트 비활성화*
 
 ## 기술 스택
 
